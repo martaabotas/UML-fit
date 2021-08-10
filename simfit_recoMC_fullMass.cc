@@ -101,7 +101,7 @@ void simfit_recoMC_fullMassBin(int q2Bin, int parity, bool multiSample, uint nSa
   else if(comp == 1){
     mass = new RooRealVar("mass","mass", 4.9,5.7);
   }
-  else if((q2Bin == 4) && (pdf_model == 0)){
+  else if((q2Bin == 4) && ((pdf_model == 0) || (pdf_model == 3))){
     mass = new RooRealVar("mass","mass", 5.1,5.45);
   }
   else if(pdf_model == 1){
@@ -135,8 +135,6 @@ void simfit_recoMC_fullMassBin(int q2Bin, int parity, bool multiSample, uint nSa
   for (unsigned int iy = 0; iy < years.size(); iy++) {
     year.clear(); year.assign(Form("%i",years[iy]));
     string filename_data = ("reco" + dataString + Form("Dataset_b%i_%i.root", q2Bin, years[iy])).c_str(); 
- 
-    // import data (or MC as data proxy) HERE
     if(parity < 2){if (!retrieveWorkspace(filename_data, wsp, Form("ws_b%ip%i", q2Bin, 1-parity ), wsp, Form("ws_b%ip%i", q2Bin, 1-parity ), parity))  return;}
     else{if (!retrieveWorkspace(filename_data, wsp_even, Form("ws_b%ip%i", q2Bin, 0), wsp_odd, Form("ws_b%ip%i", q2Bin, 1), parity))  return;}
 
@@ -152,17 +150,24 @@ void simfit_recoMC_fullMassBin(int q2Bin, int parity, bool multiSample, uint nSa
     }
   
     // import mass PDF from fits to the MC 
+    string filename_mc_mass;
     if(constrain == 0){
       if(q2Bin == 4){
-        string filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_Jpsi_newbdt.root",years[iy]);
+        if((years[iy] == 20160) || (years[iy] = 20161)){filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_Jpsi_newbdt.root",2016);}
+        else{filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_Jpsi_newbdt.root",years[iy]);}
+
         if (!retrieveWorkspace(filename_mc_mass, wsp_mcmass, "w", wsp_mcmass, "w", 0))  return;
       }
       else if(q2Bin == 6){
-        string filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_Psi_newbdt.root",years[iy]);
+        if((years[iy] == 20160) || (years[iy] = 20161)){filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_Psi_newbdt.root",2016);}
+        else{filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_Psi_newbdt.root",years[iy]);}
+
         if (!retrieveWorkspace(filename_mc_mass, wsp_mcmass, "w", wsp_mcmass, "w", 0))  return;
       }
       else{
-        string filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_newbdt.root",years[iy]);
+        if((years[iy] == 20160) || (years[iy] = 20161)){filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_newbdt.root",2016);}
+       else{filename_mc_mass = Form("/eos/cms/store/user/fiorendi/p5prime/massFits/results_fits_%i_fM_newbdt.root",years[iy]);}
+
         if (!retrieveWorkspace(filename_mc_mass, wsp_mcmass, "w", wsp_mcmass, "w", 0))  return;
       }  
     }
@@ -399,7 +404,7 @@ void simfit_recoMC_fullMassBin(int q2Bin, int parity, bool multiSample, uint nSa
     if(constrain == 1){//constrained fit
       mass_wt = new RooFormulaVar(Form("mass_{WT}^{%i}",years[iy]), "meanwt", "@0+@1", RooArgList(*mean_rt,*mean_difference)); 
 
-      if( ((pdf_model != 0) && (q2Bin == 4)) || ((pdf_model == 3) && (q2Bin != 4) && (q2Bin != 6))){ // fix WT shape of MC to compute systematics
+      if( ((pdf_model != 0) && (q2Bin == 4)) || ((pdf_model == 3) && (q2Bin != 4)) ){ // fix WT shape of MC to compute systematics
         sigma_wt->setConstant();
         alpha_wt1->setConstant();
         alpha_wt2->setConstant();
@@ -517,7 +522,7 @@ void simfit_recoMC_fullMassBin(int q2Bin, int parity, bool multiSample, uint nSa
                                              ("final_PDF_extended_"+year).c_str(),
                                               RooArgList(*final_PDF, *CB_bkg), RooArgList(*signal_yield, *CB_yield));
         }*/
-        if((pdf_model == 3) && ((q2Bin == 6) || (q2Bin == 4))){
+        /*if((pdf_model == 3) && ((q2Bin == 6))){
           RooExponential* exp_bkg = new RooExponential(("exp_bkg_PDF_"+year).c_str(),
                                                        ("exp_bkg_PDF_"+year).c_str(),
                                                         *mass, *lambda);
@@ -530,15 +535,15 @@ void simfit_recoMC_fullMassBin(int q2Bin, int parity, bool multiSample, uint nSa
           final_PDF_extended = new RooAddPdf(("final_PDF_extended_"+year).c_str(),
                                              ("final_PDF_extended_"+year).c_str(),
                                               RooArgList(*final_PDF, *CB_bkg), RooArgList(*signal_yield, *CB_yield));
-        }
-        else{
+        }*/
+        //else{
           RooExponential* CB_bkg = new RooExponential(("CB_bkg_PDF_"+year).c_str(),
                                       ("CB_bkg_PDF_"+year).c_str(),
                                        *mass, *lambda);
           final_PDF_extended = new RooAddPdf(("final_PDF_extended_"+year).c_str(),
                                              ("final_PDF_extended_"+year).c_str(),
                                              RooArgList(*final_PDF, *CB_bkg), RooArgList(*signal_yield, *CB_yield));
-        }
+        //}
       }
     }
     else if(constrain == 0){ // fit without Gaussian constraints
@@ -1017,11 +1022,15 @@ int main(int argc, char** argv)
   if(nSample > 0){
     if(parity < 2){   
       scale_to_data.insert(std::make_pair(2016, 0.006*2 / 2.5  )); // *2 since we are using only odd/even events, second factor is "data-driven"
+      scale_to_data.insert(std::make_pair(20160, 0.006*2 / 2.5  ));
+      scale_to_data.insert(std::make_pair(20161, 0.006*2 / 2.5  ));
       scale_to_data.insert(std::make_pair(2017, 0.005*2 / 2.05 ));
       scale_to_data.insert(std::make_pair(2018, 0.007*2 / 1.9  ));
     }
     else{
-      scale_to_data.insert(std::make_pair(2016, 0.006 / 2.5  )); 
+      scale_to_data.insert(std::make_pair(2016, 0.006 / 2.5  ));
+      scale_to_data.insert(std::make_pair(20160, 0.006 / 2.5  )); 
+      scale_to_data.insert(std::make_pair(20161, 0.006 / 2.5  ));
       scale_to_data.insert(std::make_pair(2017, 0.005 / 2.05 ));
       scale_to_data.insert(std::make_pair(2018, 0.007 / 1.9  ));
     }
