@@ -24,48 +24,55 @@ void branching_fraction(){
     bin_width[i] = q2Bin[i+1]-q2Bin[i];
   }
 
-  //efficiencies + efficiency systematics
-  TFile* f_eff_2016 = new TFile(Form("~/public/UML-fit/Efficiency/eff_x_acc_%i.root",2016));
-  TFile* f_eff_2017 = new TFile(Form("~/public/UML-fit/Efficiency/eff_x_acc_%i.root",2017));
-  TFile* f_eff_2018 = new TFile(Form("~/public/UML-fit/Efficiency/eff_x_acc_%i.root",2018));
+  //efficiencies
+  TFile* f_eff_2016 = new TFile(Form("~/public/UML-fit/Angular_efficiency/eff_x_acc_%i.root",2016));
+  TFile* f_eff_2017 = new TFile(Form("~/public/UML-fit/Angular_efficiency/eff_x_acc_%i.root",2017));
+  TFile* f_eff_2018 = new TFile(Form("~/public/UML-fit/Angular_efficiency/eff_x_acc_%i.root",2018));
 
-  TGraphErrors* eff_2016 = (TGraphErrors*)f_eff_2016->Get("Graph");
-  TGraphErrors* eff_2017 = (TGraphErrors*)f_eff_2017->Get("Graph");
-  TGraphErrors* eff_2018 = (TGraphErrors*)f_eff_2018->Get("Graph");
+  // efficiencies
+  TGraphErrors* efficiency_2016 = (TGraphErrors*)f_eff_2016->Get("Graph;1");
+  TGraphErrors* efficiency_2017 = (TGraphErrors*)f_eff_2017->Get("Graph;1");
+  TGraphErrors* efficiency_2018 = (TGraphErrors*)f_eff_2018->Get("Graph;1");
 
-  double *eff_x_acc_2016 = eff_2016->GetY();
-  double *eff_x_acc_2017 = eff_2017->GetY();
-  double *eff_x_acc_2018 = eff_2018->GetY();
+  TGraphErrors* weighted_2016 = (TGraphErrors*)f_eff_2016->Get("Graph;2");
+  TGraphErrors* weighted_2017 = (TGraphErrors*)f_eff_2017->Get("Graph;2");
+  TGraphErrors* weighted_2018 = (TGraphErrors*)f_eff_2018->Get("Graph;2");
 
-  TGraph* efficiency_2016 = (TGraph*)f_eff_2016->Get("Graph;1");
-  TGraph* efficiency_2017 = (TGraph*)f_eff_2017->Get("Graph;1");
-  TGraph* efficiency_2018 = (TGraph*)f_eff_2018->Get("Graph;1");
+  TGraphErrors* acceptance_2016 = (TGraphErrors*)f_eff_2016->Get("Graph;3");
+  TGraphErrors* acceptance_2017 = (TGraphErrors*)f_eff_2017->Get("Graph;3");
+  TGraphErrors* acceptance_2018 = (TGraphErrors*)f_eff_2018->Get("Graph;3");
 
-  TGraph* acceptance_2016 = (TGraph*)f_eff_2016->Get("Graph;2");
-  TGraph* acceptance_2017 = (TGraph*)f_eff_2017->Get("Graph;2");
-  TGraph* acceptance_2018 = (TGraph*)f_eff_2018->Get("Graph;2");
+  TGraphErrors* efficiency_x_acceptance_2016 = (TGraphErrors*)f_eff_2016->Get("Graph;4");
+  TGraphErrors* efficiency_x_acceptance_2017 = (TGraphErrors*)f_eff_2017->Get("Graph;4");
+  TGraphErrors* efficiency_x_acceptance_2018 = (TGraphErrors*)f_eff_2018->Get("Graph;4");
 
-  TGraph* weighted_2016 = (TGraph*)f_eff_2016->Get("Graph;3");
-  TGraph* weighted_2017 = (TGraph*)f_eff_2017->Get("Graph;3");
-  TGraph* weighted_2018 = (TGraph*)f_eff_2018->Get("Graph;3");
+  double *eff_2016 = efficiency_2016->GetY();
+  double *eff_2017 = efficiency_2017->GetY();
+  double *eff_2018 = efficiency_2018->GetY();
 
-  double* acc_2016 = acceptance_2016->GetY();
-  double* acc_2017 = acceptance_2017->GetY();
-  double* acc_2018 = acceptance_2018->GetY();
+  double *wei_2016 = weighted_2016->GetY();
+  double *wei_2017 = weighted_2017->GetY();
+  double *wei_2018 = weighted_2018->GetY();
 
-  double* wei_2016 = weighted_2016->GetY();
-  double* wei_2017 = weighted_2017->GetY();
-  double* wei_2018 = weighted_2018->GetY();
+  double *acc_2016 = acceptance_2016->GetY();
+  double *acc_2017 = acceptance_2017->GetY();
+  double *acc_2018 = acceptance_2018->GetY();
 
-  //double *eff_syst_2016 = eff_2016->GetEY();
-  //double *eff_syst_2017 = eff_2017->GetEY();
-  //double *eff_syst_2018 = eff_2018->GetEY();
+  double *eff_x_acc_2016 = efficiency_x_acceptance_2016->GetY();
+  double *eff_x_acc_2017 = efficiency_x_acceptance_2017->GetY();
+  double *eff_x_acc_2018 = efficiency_x_acceptance_2018->GetY();
 
-  //yields + yield systematics + yied statistical errors
   double eff_x_acc_wei_2016[n_q2Bin];
   double eff_x_acc_wei_2017[n_q2Bin];
   double eff_x_acc_wei_2018[n_q2Bin];
 
+  for(int i = 0; i < n_q2Bin; i++){
+    eff_x_acc_wei_2016[i] = wei_2016[i]*acc_2016[i];
+    eff_x_acc_wei_2017[i] = wei_2017[i]*acc_2017[i];
+    eff_x_acc_wei_2018[i] = wei_2018[i]*acc_2018[i];
+  }
+
+  //yields + yield systematics + yied statistical errors
   double yields_2016[n_q2Bin];
   double yields_2017[n_q2Bin];
   double yields_2018[n_q2Bin];
@@ -74,9 +81,9 @@ void branching_fraction(){
   double yields_errors_2017[n_q2Bin];
   double yields_errors_2018[n_q2Bin];
 
-  double yields_average[n_q2Bin];
-  double yields_average_stat[n_q2Bin];
-  double yields_average_syst[n_q2Bin];
+  double yields_sum[n_q2Bin];
+  double yields_sum_stat[n_q2Bin];
+  double yields_sum_syst[n_q2Bin];
 
   TFile* f_yield_syst_2016 = new TFile("~/public/UML-fit/Systematics/root_files/yield_syst_2016.root");
   TFile* f_yield_syst_2017 = new TFile("~/public/UML-fit/Systematics/root_files/yield_syst_2017.root");
@@ -89,13 +96,10 @@ void branching_fraction(){
   double *yield_syst_2016 = graph_2016->GetEY();
   double *yield_syst_2017 = graph_2017->GetEY();
   double *yield_syst_2018 = graph_2018->GetEY();
-
+  
   for(int i = 0; i < n_q2Bin; i++){
-    eff_x_acc_wei_2016[i] = wei_2016[i]*acc_2016[i];
-    eff_x_acc_wei_2017[i] = wei_2017[i]*acc_2017[i];
-    eff_x_acc_wei_2018[i] = wei_2018[i]*acc_2018[i];
-
-    TFile* f_yield_2016 = new TFile(Form("~/public/UML-fit/simFitMassResults/simFitResult_recoMC_fullMass%i_DATA_b%ip2c1m0_subs0CT+WT.root",2016,i));
+    //TFile* f_yield_2016 = new TFile(Form("~/public/UML-fit/simFitMassResults/simFitResult_recoMC_fullMass%i_DATA_b%ip2c1m0_subs0CT+WT.root",2016,i));
+    TFile* f_yield_2016 = new TFile(Form("~/public/UML-fit/simFitMassResults/simFitResult_recoMC_fullMass%i_DATA_b%ip2c1m0_subs0CT+WT.root",20161,i));
     TFile* f_yield_2017 = new TFile(Form("~/public/UML-fit/simFitMassResults/simFitResult_recoMC_fullMass%i_DATA_b%ip2c1m0_subs0CT+WT.root",2017,i));
     TFile* f_yield_2018 = new TFile(Form("~/public/UML-fit/simFitMassResults/simFitResult_recoMC_fullMass%i_DATA_b%ip2c1m0_subs0CT+WT.root",2018,i));
 
@@ -103,7 +107,8 @@ void branching_fraction(){
     RooFitResult* fitresult_2017 = (RooFitResult*)f_yield_2017->Get(Form("simFitResult_b%ip2c1m0subs0",i));
     RooFitResult* fitresult_2018 = (RooFitResult*)f_yield_2018->Get(Form("simFitResult_b%ip2c1m0subs0",i));
 
-    RooRealVar* sig_yield_2016 = (RooRealVar*)fitresult_2016->floatParsFinal().find(Form("sig_yield^{%i}",2016));   
+    //RooRealVar* sig_yield_2016 = (RooRealVar*)fitresult_2016->floatParsFinal().find(Form("sig_yield^{%i}",2016));   
+    RooRealVar* sig_yield_2016 = (RooRealVar*)fitresult_2016->floatParsFinal().find(Form("sig_yield^{%i}",20161));   
     RooRealVar* sig_yield_2017 = (RooRealVar*)fitresult_2017->floatParsFinal().find(Form("sig_yield^{%i}",2017));
     RooRealVar* sig_yield_2018 = (RooRealVar*)fitresult_2018->floatParsFinal().find(Form("sig_yield^{%i}",2018));
 
@@ -111,13 +116,13 @@ void branching_fraction(){
     yields_2017[i] = sig_yield_2017->getVal();
     yields_2018[i] = sig_yield_2018->getVal();
 
-    yields_errors_2016[i] = (sig_yield_2016->getError());
-    yields_errors_2017[i] = (sig_yield_2017->getError());
-    yields_errors_2018[i] = (sig_yield_2018->getError());
+    yields_errors_2016[i] = sig_yield_2016->getError();
+    yields_errors_2017[i] = sig_yield_2017->getError();
+    yields_errors_2018[i] = sig_yield_2018->getError();
 
-    yields_average[i] = (1./3.)*(yields_2016[i]+yields_2017[i]+yields_2018[i]);
-    yields_average_stat[i] = (1./3.)*sqrt( pow(yields_errors_2016[i],2) + pow(yields_errors_2017[i],2) + pow(yields_errors_2018[i],2) );
-    yields_average_syst[i] = (1./3.)*sqrt( pow(yield_syst_2016[i],2) + pow(yield_syst_2017[i],2) + pow(yield_syst_2018[i],2) );
+    yields_sum[i] = yields_2016[i]+yields_2017[i]+yields_2018[i];
+    yields_sum_stat[i] = sqrt( pow(yields_errors_2016[i],2) + pow(yields_errors_2017[i],2) + pow(yields_errors_2018[i],2) );
+    yields_sum_syst[i] = sqrt( pow(yield_syst_2016[i],2) + pow(yield_syst_2017[i],2) + pow(yield_syst_2018[i],2) );
 
     delete f_yield_2016;
     delete f_yield_2017;
@@ -137,24 +142,27 @@ void branching_fraction(){
   double PDG_Psi = 0.0080;
   double PDG_Psi_error = 0.0006;
 
-  double PDG_ratio = PDG_Psi_K/PDG_JPsi_K;
-  double PDG_ratio_error = sqrt( pow((1/PDG_JPsi_K),2)*pow(PDG_Psi_K_error,2) + pow((PDG_Psi_K/(PDG_JPsi_K*PDG_JPsi_K)),2)*pow(PDG_JPsi_K_error,2) );
+  //double PDG_ratio = (PDG_Psi_K/PDG_JPsi_K)*(PDG_Psi/PDG_JPsi);
+  //double PDG_ratio_error = sqrt( pow(PDG_JPsi_K_error/PDG_JPsi_K,2) + pow(PDG_Psi_K_error/PDG_Psi_K,2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_Psi_error/PDG_Psi,2) )*PDG_ratio;
+  double PDG_ratio = 0.0619;
+  double PDG_ratio_error = 0.0018;
+  double PDG_syst = 0.0013;
 
-  double ratio_2016 =  (yields_2016[6]/yields_2016[4])*(eff_x_acc_2016[4]/eff_x_acc_2016[6])*(PDG_JPsi/PDG_Psi);
-  double ratio_2017 =  (yields_2017[6]/yields_2017[4])*(eff_x_acc_2017[4]/eff_x_acc_2017[6])*(PDG_JPsi/PDG_Psi);
-  double ratio_2018 =  (yields_2018[6]/yields_2018[4])*(eff_x_acc_2018[4]/eff_x_acc_2018[6])*(PDG_JPsi/PDG_Psi);
+  double ratio_2016 =  (yields_2016[6]/yields_2016[4])*(eff_x_acc_2016[4]/eff_x_acc_2016[6]);
+  double ratio_2017 =  (yields_2017[6]/yields_2017[4])*(eff_x_acc_2017[4]/eff_x_acc_2017[6]);
+  double ratio_2018 =  (yields_2018[6]/yields_2018[4])*(eff_x_acc_2018[4]/eff_x_acc_2018[6]);
 
-  double ratio_wei_2016 = (yields_2016[6]/yields_2016[4])*(eff_x_acc_wei_2016[4]/eff_x_acc_wei_2016[6])*(PDG_JPsi/PDG_Psi);
-  double ratio_wei_2017 = (yields_2017[6]/yields_2017[4])*(eff_x_acc_wei_2017[4]/eff_x_acc_wei_2017[6])*(PDG_JPsi/PDG_Psi);
-  double ratio_wei_2018 = (yields_2018[6]/yields_2018[4])*(eff_x_acc_wei_2018[4]/eff_x_acc_wei_2018[6])*(PDG_JPsi/PDG_Psi);
+  double ratio_wei_2016 = (yields_2016[6]/yields_2016[4])*(eff_x_acc_wei_2016[4]/eff_x_acc_wei_2016[6]);
+  double ratio_wei_2017 = (yields_2017[6]/yields_2017[4])*(eff_x_acc_wei_2017[4]/eff_x_acc_wei_2017[6]);
+  double ratio_wei_2018 = (yields_2018[6]/yields_2018[4])*(eff_x_acc_wei_2018[4]/eff_x_acc_wei_2018[6]);
 
-  double eff_syst1_2016 = abs(ratio_2016-ratio_wei_2016);
-  double eff_syst1_2017 = abs(ratio_2017-ratio_wei_2017);
-  double eff_syst1_2018 = abs(ratio_2018-ratio_wei_2018);
+  double ratio_diff_2016 = abs(ratio_2016 - ratio_wei_2016);
+  double ratio_diff_2017 = abs(ratio_2017 - ratio_wei_2017);
+  double ratio_diff_2018 = abs(ratio_2018 - ratio_wei_2018);
 
-  double ratio_error_2016_syst = sqrt( pow(yield_syst_2016[6]/yields_2016[6],2) + pow(yield_syst_2016[4]/yields_2016[4],2) + pow(eff_syst1_2016/ratio_2016,2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_Psi_error/PDG_Psi,2) )*ratio_2016;
-  double ratio_error_2017_syst = sqrt( pow(yield_syst_2017[6]/yields_2017[6],2) + pow(yield_syst_2017[4]/yields_2017[4],2) + pow(eff_syst1_2017/ratio_wei_2017,2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_Psi_error/PDG_Psi,2) )*ratio_2017;
-  double ratio_error_2018_syst = sqrt( pow(yield_syst_2018[6]/yields_2018[6],2) + pow(yield_syst_2018[4]/yields_2018[4],2) + pow(eff_syst1_2018/ratio_wei_2018,2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_Psi_error/PDG_Psi,2) )*ratio_2018;
+  double ratio_error_2016_syst = sqrt( pow(yield_syst_2016[6]/yields_2016[6],2) + pow(yield_syst_2016[4]/yields_2016[4],2) + pow(ratio_diff_2016/ratio_2016,2) )*ratio_2016;
+  double ratio_error_2017_syst = sqrt( pow(yield_syst_2017[6]/yields_2017[6],2) + pow(yield_syst_2017[4]/yields_2017[4],2) + pow(ratio_diff_2017/ratio_2017,2) )*ratio_2017;
+  double ratio_error_2018_syst = sqrt( pow(yield_syst_2018[6]/yields_2018[6],2) + pow(yield_syst_2018[4]/yields_2018[4],2) + pow(ratio_diff_2018/ratio_2018,2) )*ratio_2018;
 
   double ratio_error_2016_stat = sqrt( pow(yields_errors_2016[4]/yields_2016[4],2) + pow(yields_errors_2016[6]/yields_2016[6],2) )*ratio_2016;
   double ratio_error_2017_stat = sqrt( pow(yields_errors_2017[4]/yields_2017[4],2) + pow(yields_errors_2017[6]/yields_2017[6],2) )*ratio_2017;
@@ -166,14 +174,17 @@ void branching_fraction(){
 
   double x[] = {PDG_ratio, ratio_2016, ratio_2017, ratio_2018, ratio};
   double y[] = {1., 2., 3., 4., 5.};
-  double ex_stat[] = {0., ratio_error_2016_stat, ratio_error_2017_stat, ratio_error_2018_stat, ratio_error_stat};
-  double ex_syst[] = {PDG_ratio_error, ratio_error_2016_syst, ratio_error_2017_syst, ratio_error_2018_syst, ratio_error_syst}; 
+  double ex_stat[] = {PDG_ratio_error, ratio_error_2016_stat, ratio_error_2017_stat, ratio_error_2018_stat, ratio_error_stat};
+  double ex_syst[] = {PDG_syst, ratio_error_2016_syst, ratio_error_2017_syst, ratio_error_2018_syst, ratio_error_syst}; 
 
-  cout << '|' << setw(15) << "B(JPsi)" << '|' << setw(15) << "Yield Syst" << '|' << setw(15) << "Eff syst" << '|' << setw(15) << "Total syst" << '|' << setw(15) << "Total stat " << '|' << endl;
+  cout << '|' << setw(15) << "Yield syst - bin 4" << '|' << setw(15) << "Yield syst - bin 6" << '|' << setw(15) << "Eff syst" << '|' << setw(15) << "Total syst" << '|' << setw(15) << "Total stat " << '|' << endl;
 
-  cout << '|' << setw(15) << PDG_JPsi_error/PDG_JPsi << '|' << setw(15) << yield_syst_2016[4]/yields_2016[4] << '|' << setw(15) << eff_syst1_2016/ratio_2016 << '|' << setw(15) << ratio_error_2016_syst/ratio_2016 << '|' << setw(15) << ratio_error_2016_stat/ratio_2016   << '|' << endl;
-  cout << '|' << setw(15) << PDG_JPsi_error/PDG_JPsi << '|' << setw(15) << yield_syst_2017[4]/yields_2017[4] << '|' << setw(15) << eff_syst1_2017/ratio_2017 << '|' << setw(15) << ratio_error_2017_syst/ratio_2017 << '|' << setw(15) << ratio_error_2017_stat/ratio_2017   << '|' << endl;
-  cout << '|' << setw(15) << PDG_JPsi_error/PDG_JPsi << '|' << setw(15) << yield_syst_2018[4]/yields_2018[4] << '|' << setw(15) << eff_syst1_2018/ratio_2018 << '|' << setw(15) << ratio_error_2018_syst/ratio_2018 << '|' << setw(15) << ratio_error_2018_stat/ratio_2018   << '|' << endl;
+  cout << '|' << setw(15) << (yield_syst_2016[4]/yields_2016[4])*100  << '|' << setw(15) << (yield_syst_2016[6]/yields_2016[6])*100 << '|' << setw(15) << (ratio_diff_2016/ratio_2016)*100  << '|' << setw(15) << (ratio_error_2016_syst/ratio_2016)*100 << '|' << setw(15) << (ratio_error_2016_stat/ratio_2016)*100   << '|' << endl;
+  cout << '|' << setw(15) << (yield_syst_2017[4]/yields_2017[4])*100  << '|' << setw(15) << (yield_syst_2017[6]/yields_2017[6])*100 << '|' << setw(15) << (ratio_diff_2017/ratio_2017)*100  << '|' << setw(15) << (ratio_error_2017_syst/ratio_2017)*100 << '|' << setw(15) << (ratio_error_2017_stat/ratio_2017)*100   << '|' << endl;
+  cout << '|' << setw(15) << (yield_syst_2018[4]/yields_2018[4])*100  << '|' << setw(15) << (yield_syst_2018[6]/yields_2018[6])*100 << '|' << setw(15) << (ratio_diff_2018/ratio_2018)*100  << '|' << setw(15) << (ratio_error_2018_syst/ratio_2018)*100 << '|' << setw(15) << (ratio_error_2018_stat/ratio_2018)*100   << '|' << endl;
+
+  cout << '|' << setw(15) << "PDG syst error" << '|' << setw(15) << "PDG stat error" << '|' << endl;
+  cout << '|' << setw(15) << (PDG_syst/PDG_ratio)*100 << '|' << setw(15) << (PDG_ratio_error/PDG_ratio)*100 << '|' << endl;
 
   TGraphErrors* gr_stat = new TGraphErrors(5,x,y,ex_stat);
   gr_stat->SetLineColor(kBlack);
@@ -195,13 +206,13 @@ void branching_fraction(){
   line->SetLineStyle(2);
   line->SetLineColor(kBlue);
  
-  TLatex* latex1 = new TLatex(PDG_ratio-PDG_ratio_error,1.1,Form("#scale[0.5]{PDG: %f #pm %f }",PDG_ratio,PDG_ratio_error));
-  TLatex* latex2 = new TLatex(ratio_2016-ratio_error_2016_syst,2.1,Form("#scale[0.5]{2016: %f #pm %f #pm %f}",ratio_2016,ratio_error_2016_stat,ratio_error_2016_syst));
-  TLatex* latex3 = new TLatex(ratio_2017-ratio_error_2017_syst,3.1,Form("#scale[0.5]{2017: %f #pm %f #pm %f}",ratio_2017,ratio_error_2017_stat,ratio_error_2017_syst));
-  TLatex* latex4 = new TLatex(ratio_2018-ratio_error_2018_syst,4.1,Form("#scale[0.5]{2018: %f #pm %f #pm %f}",ratio_2018,ratio_error_2018_stat,ratio_error_2018_syst));
-  TLatex* latex5 = new TLatex(ratio-ratio_error_syst,5.1,Form("#scale[0.5]{Year average: %f #pm %f #pm %f}",ratio,ratio_error_stat,ratio_error_syst));
+  TLatex* latex1 = new TLatex(PDG_ratio-PDG_ratio_error,1.1,Form("#scale[0.5]{PDG: %.4f #pm %.4f #pm %.4f }",PDG_ratio,PDG_ratio_error,PDG_syst));
+  TLatex* latex2 = new TLatex(ratio_2016-ratio_error_2016_syst,2.1,Form("#scale[0.5]{2016: %.4f #pm %.4f #pm %.4f}",ratio_2016,ratio_error_2016_stat,ratio_error_2016_syst));
+  TLatex* latex3 = new TLatex(ratio_2017-ratio_error_2017_syst,3.1,Form("#scale[0.5]{2017: %.4f #pm %.4f #pm %.4f}",ratio_2017,ratio_error_2017_stat,ratio_error_2017_syst));
+  TLatex* latex4 = new TLatex(ratio_2018-ratio_error_2018_syst,4.1,Form("#scale[0.5]{2018: %.4f #pm %.4f #pm %.4f}",ratio_2018,ratio_error_2018_stat,ratio_error_2018_syst));
+  TLatex* latex5 = new TLatex(ratio-ratio_error_syst,5.1,Form("#scale[0.5]{All years: %.4f #pm %.4f #pm %.4f}",ratio,ratio_error_stat,ratio_error_syst));
 
-  TLegend *leg = new TLegend(0.7, 0.8, 0.9, 0.9);
+  TLegend *leg = new TLegend(0.1, 0.8, 0.3, 0.9);
   leg->SetFillColor(0);
   leg->AddEntry(gr_stat, "Statistical Uncertainty", "lp");
   leg->AddEntry(gr_syst, "Systematic Uncertainty", "lp");
@@ -223,23 +234,24 @@ void branching_fraction(){
 
   // differential measurement
   double dB_dq_2016[n_q2Bin];
-  double dB_dq_2016_wei[n_q2Bin];
   double dB_dq_syst_2016[n_q2Bin];
   double dB_dq_stat_2016[n_q2Bin];
 
+  double dB_dq_wei_2016[n_q2Bin];
+  double dB_dq_wei_2017[n_q2Bin];
+  double dB_dq_wei_2018[n_q2Bin];
+
+  double dB_dq_diff_2016[n_q2Bin];
+  double dB_dq_diff_2017[n_q2Bin];
+  double dB_dq_diff_2018[n_q2Bin];
+
   double dB_dq_2017[n_q2Bin];
-  double dB_dq_2017_wei[n_q2Bin];
   double dB_dq_syst_2017[n_q2Bin];
   double dB_dq_stat_2017[n_q2Bin];
 
   double dB_dq_2018[n_q2Bin];
-  double dB_dq_2018_wei[n_q2Bin];
   double dB_dq_syst_2018[n_q2Bin];
   double dB_dq_stat_2018[n_q2Bin];
-
-  double eff_syst_2016[n_q2Bin];
-  double eff_syst_2017[n_q2Bin];
-  double eff_syst_2018[n_q2Bin];
 
   for(int i = 0; i < n_q2Bin; i++){
     if((i != 4) && (i != 6)){  
@@ -247,26 +259,26 @@ void branching_fraction(){
       dB_dq_2017[i] = (yields_2017[i]/yields_2017[4])*(eff_x_acc_2017[4]/eff_x_acc_2017[i])*(PDG_JPsi_K*PDG_JPsi/bin_width[i]);
       dB_dq_2018[i] = (yields_2018[i]/yields_2018[4])*(eff_x_acc_2018[4]/eff_x_acc_2018[i])*(PDG_JPsi_K*PDG_JPsi/bin_width[i]);
 
-      dB_dq_2016_wei[i] = (yields_2016[i]/yields_2016[4])*(eff_x_acc_wei_2016[4]/eff_x_acc_wei_2016[i])*(PDG_JPsi_K*PDG_JPsi/bin_width[i]);    
-      dB_dq_2017_wei[i] = (yields_2017[i]/yields_2017[4])*(eff_x_acc_wei_2017[4]/eff_x_acc_wei_2017[i])*(PDG_JPsi_K*PDG_JPsi/bin_width[i]);
-      dB_dq_2018_wei[i] = (yields_2018[i]/yields_2018[4])*(eff_x_acc_wei_2018[4]/eff_x_acc_wei_2018[i])*(PDG_JPsi_K*PDG_JPsi/bin_width[i]);     
+      dB_dq_wei_2016[i] = (yields_2016[i]/yields_2016[4])*(eff_x_acc_wei_2016[4]/eff_x_acc_wei_2016[i])*(PDG_JPsi_K*PDG_JPsi/bin_width[i]);
+      dB_dq_wei_2017[i] = (yields_2017[i]/yields_2017[4])*(eff_x_acc_wei_2017[4]/eff_x_acc_wei_2017[i])*(PDG_JPsi_K*PDG_JPsi/bin_width[i]);
+      dB_dq_wei_2018[i] = (yields_2018[i]/yields_2018[4])*(eff_x_acc_wei_2018[4]/eff_x_acc_wei_2018[i])*(PDG_JPsi_K*PDG_JPsi/bin_width[i]);
 
-      eff_syst_2016[i] = abs(dB_dq_2016[i]-dB_dq_2016_wei[i]);
-      eff_syst_2017[i] = abs(dB_dq_2017[i]-dB_dq_2017_wei[i]);
-      eff_syst_2018[i] = abs(dB_dq_2018[i]-dB_dq_2018_wei[i]);
+      dB_dq_diff_2016[i] = abs(dB_dq_2016[i] - dB_dq_wei_2016[i]);
+      dB_dq_diff_2017[i] = abs(dB_dq_2017[i] - dB_dq_wei_2017[i]);
+      dB_dq_diff_2018[i] = abs(dB_dq_2018[i] - dB_dq_wei_2018[i]);
 
-      dB_dq_syst_2016[i] = sqrt( pow(yield_syst_2016[i]/yields_2016[i],2) + pow(yield_syst_2016[4]/yields_2016[4],2) + pow(eff_syst_2016[i]/dB_dq_2016[i],2) + pow(eff_syst_2016[4]/eff_x_acc_2016[4],2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_JPsi_K_error/PDG_JPsi_K,2) )*dB_dq_2016[i];
-      dB_dq_syst_2017[i] = sqrt( pow(yield_syst_2017[i]/yields_2017[i],2) + pow(yield_syst_2017[4]/yields_2017[4],2) + pow(eff_syst_2017[i]/dB_dq_2017[i],2) + pow(eff_syst_2017[4]/eff_x_acc_2017[4],2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_JPsi_K_error/PDG_JPsi_K,2) )*dB_dq_2017[i];
-      dB_dq_syst_2018[i] = sqrt( pow(yield_syst_2018[i]/yields_2018[i],2) + pow(yield_syst_2018[4]/yields_2018[4],2) + pow(eff_syst_2018[i]/dB_dq_2018[i],2) + pow(eff_syst_2018[4]/eff_x_acc_2018[4],2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_JPsi_K_error/PDG_JPsi_K,2) )*dB_dq_2018[i];
+      dB_dq_syst_2016[i] = sqrt( pow(yield_syst_2016[i]/yields_2016[i],2) + pow(yield_syst_2016[4]/yields_2016[4],2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_JPsi_K_error/PDG_JPsi_K,2) + pow(dB_dq_diff_2016[i]/dB_dq_2016[i],2) )*dB_dq_2016[i];
+      dB_dq_syst_2017[i] = sqrt( pow(yield_syst_2017[i]/yields_2017[i],2) + pow(yield_syst_2017[4]/yields_2017[4],2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_JPsi_K_error/PDG_JPsi_K,2) + pow(dB_dq_diff_2017[i]/dB_dq_2017[i],2) )*dB_dq_2017[i];
+      dB_dq_syst_2018[i] = sqrt( pow(yield_syst_2018[i]/yields_2018[i],2) + pow(yield_syst_2018[4]/yields_2018[4],2) + pow(PDG_JPsi_error/PDG_JPsi,2) + pow(PDG_JPsi_K_error/PDG_JPsi_K,2) + pow(dB_dq_diff_2018[i]/dB_dq_2018[i],2) )*dB_dq_2018[i];
 
       dB_dq_stat_2016[i] = sqrt( pow(yields_errors_2016[i]/yields_2016[i],2) + pow(yields_errors_2016[4]/yields_2016[4],2) )*dB_dq_2016[i];   
       dB_dq_stat_2017[i] = sqrt( pow(yields_errors_2017[i]/yields_2017[i],2) + pow(yields_errors_2017[4]/yields_2017[4],2) )*dB_dq_2017[i];
       dB_dq_stat_2018[i] = sqrt( pow(yields_errors_2018[i]/yields_2018[i],2) + pow(yields_errors_2018[4]/yields_2018[4],2) )*dB_dq_2018[i];
 
-      cout << '|' << setw(15) << "dB/dq^{2}" << '|' << setw(15) << "Yield syst" << '|' << setw(15) << "Eff syst" << '|' << setw(15) << "B_JPsi_K syst" << '|' << setw(15) << "B_JPsi syst " << '|' << setw(15) << "Total syst" << '|' << setw(15) << "Total stat" << '|' << endl;
-      cout << '|' << setw(15) << dB_dq_2016[i] << '|' << setw(15) << yield_syst_2016[i]/yields_2016[i]  << '|' << setw(15) << eff_syst_2016[i]/dB_dq_2016[i] << '|' << setw(15) << PDG_JPsi_K_error/PDG_JPsi_K << '|' << setw(15) << PDG_JPsi_error/PDG_JPsi << '|' << setw(15) << dB_dq_syst_2016[i]/dB_dq_2016[i] << '|' << setw(15) << dB_dq_stat_2016[i]/dB_dq_2016[i] << '|' << endl;
-      cout << '|' << setw(15) << dB_dq_2017[i] << '|' << setw(15) << yield_syst_2017[i]/yields_2017[i]  << '|' << setw(15) << eff_syst_2017[i]/dB_dq_2017[i] << '|' << setw(15) << PDG_JPsi_K_error/PDG_JPsi_K << '|' << setw(15) << PDG_JPsi_error/PDG_JPsi << '|' << setw(15) << dB_dq_syst_2017[i]/dB_dq_2017[i] << '|' << setw(15) << dB_dq_stat_2017[i]/dB_dq_2017[i] << '|' << endl;
-      cout << '|' << setw(15) << dB_dq_2018[i] << '|' << setw(15) << yield_syst_2018[i]/yields_2018[i]  << '|' << setw(15) << eff_syst_2018[i]/dB_dq_2018[i] << '|' << setw(15) << PDG_JPsi_K_error/PDG_JPsi_K << '|' << setw(15) << PDG_JPsi_error/PDG_JPsi << '|' << setw(15) << dB_dq_syst_2018[i]/dB_dq_2018[i] << '|' << setw(15) << dB_dq_stat_2018[i]/dB_dq_2018[i] << '|' << endl;
+      cout << '|' << setw(15) << "dB/dq^{2}" << '|' << setw(15) << Form("Yield syst - bin %i",i) << '|' << setw(15) << "Yield syst - bin 4" << '|' << setw(15) << "B_JPsi_K syst" << '|' << setw(15) << "B_JPsi syst " << '|' <<  setw(15) << "Eff syst" << '|' << setw(15) << "Total syst" << '|' << setw(15) << "Total stat" << '|' << endl;
+      cout << '|' << setw(15) << dB_dq_2016[i] << '|' << setw(15) << (yield_syst_2016[i]/yields_2016[i])*100  << '|' << setw(15) << (yield_syst_2016[4]/yields_2016[4])*100  << '|' << setw(15) << (PDG_JPsi_K_error/PDG_JPsi_K)*100 << '|' << setw(15) << (PDG_JPsi_error/PDG_JPsi)*100 << '|' << setw(15) << (dB_dq_diff_2016[i]/dB_dq_2016[i])*100  << '|' << setw(15) << (dB_dq_syst_2016[i]/dB_dq_2016[i])*100 << '|' << setw(15) << (dB_dq_stat_2016[i]/dB_dq_2016[i])*100 << '|' << endl;
+      cout << '|' << setw(15) << dB_dq_2017[i] << '|' << setw(15) << (yield_syst_2017[i]/yields_2017[i])*100  << '|' << setw(15) << (yield_syst_2017[4]/yields_2017[4])*100  << '|' << setw(15) << (PDG_JPsi_K_error/PDG_JPsi_K)*100 << '|' << setw(15) << (PDG_JPsi_error/PDG_JPsi)*100 << '|' << setw(15) << (dB_dq_diff_2017[i]/dB_dq_2017[i])*100 << '|' << setw(15) << (dB_dq_syst_2017[i]/dB_dq_2017[i])*100 << '|' << setw(15) << (dB_dq_stat_2017[i]/dB_dq_2017[i])*100 << '|' << endl;
+      cout << '|' << setw(15) << dB_dq_2018[i] << '|' << setw(15) << (yield_syst_2018[i]/yields_2018[i])*100  << '|' << setw(15) << (yield_syst_2018[4]/yields_2018[4])*100 << '|' << setw(15) << (PDG_JPsi_K_error/PDG_JPsi_K)*100 << '|' << setw(15) << (PDG_JPsi_error/PDG_JPsi)*100  << '|' << setw(15) << (dB_dq_diff_2018[i]/dB_dq_2018[i])*100 << '|' << setw(15) << (dB_dq_syst_2018[i]/dB_dq_2018[i])*100 << '|' << setw(15) << (dB_dq_stat_2018[i]/dB_dq_2018[i])*100 << '|' << endl;
     }
   }
 
@@ -296,11 +308,8 @@ void branching_fraction(){
   double dB_dq_8TeV_syst[] = {0.3*pow(10,-8), 0.2*pow(10,-8), 0.3*pow(10,-8), 0.3*pow(10,-8), 0., 0.5*pow(10,-8), 0., 0.5*pow(10,-8)};
 
   TGraphErrors* gr_stat_8TeV = new TGraphErrors(n_q2Bin,q2Bins_half,dB_dq_8TeV,q2Bins_err,dB_dq_8TeV_stat);
-  TGraphErrors* gr_syst_8TeV = new TGraphErrors(n_q2Bin,q2Bins_half,dB_dq_8TeV,q2Bins_err,dB_dq_8TeV_syst);
-  gr_stat_8TeV->SetLineColor(kGreen);
-  gr_syst_8TeV->SetLineColor(kBlue);
-  gr_stat_8TeV->SetMarkerColor(kGreen);
-  gr_syst_8TeV->SetMarkerColor(kBlue);
+  gr_stat_8TeV->SetLineColor(kBlue);
+  gr_stat_8TeV->SetMarkerColor(kBlue);
 
   // LHCb results
   double lhcb_bins[] = {0.1, 2.0, 4.3, 8.68, 10.09, 12.86, 14.18, 16., 19.};
@@ -325,35 +334,23 @@ void branching_fraction(){
   double dB_dq_lhcb_syst[] = {0.05*pow(10,-7), 0.03*pow(10,-7), 0.04*pow(10,-7), 0.04*pow(10,-7), 0.04*pow(10,-7), 0.04*pow(10,-7)};
 
   TGraphErrors* gr_stat_lhcb = new TGraphErrors(n_lhcb_bins,q2Bins_half_lhcb,dB_dq_lhcb,q2Bins_err_lhcb,dB_dq_lhcb_stat);
-  TGraphErrors* gr_syst_lhcb = new TGraphErrors(n_lhcb_bins,q2Bins_half_lhcb,dB_dq_lhcb,q2Bins_err_lhcb,dB_dq_lhcb_syst);
-  gr_stat_lhcb->SetLineColor(kCyan);
-  gr_syst_lhcb->SetLineColor(kMagenta);
-  gr_stat_lhcb->SetMarkerColor(kCyan);
-  gr_syst_lhcb->SetMarkerColor(kMagenta);
+  gr_stat_lhcb->SetLineColor(kBlack);
+  gr_stat_lhcb->SetMarkerColor(kBlack);
 
   TMultiGraph* mg_2016 = new TMultiGraph();
 
   TGraphErrors* gr_stat_2016 = new TGraphErrors(n_q2Bin,q2Bins_half,dB_dq_2016,q2Bins_err,dB_dq_stat_2016);
-  gr_stat_2016->SetLineColor(kBlack);
+  gr_stat_2016->SetLineColor(kRed);
 
-  TGraphErrors* gr_syst_2016 = new TGraphErrors(n_q2Bin,q2Bins_half,dB_dq_2016,q2Bins_err,dB_dq_syst_2016);
-  gr_syst_2016->SetLineColor(kRed);
-
-  mg_2016->Add(gr_syst_2016);
-  mg_2016->Add(gr_stat_2016);
+  //mg_2016->Add(gr_stat_lhcb);
   mg_2016->Add(gr_stat_8TeV);
-  mg_2016->Add(gr_syst_8TeV);
-  mg_2016->Add(gr_stat_lhcb);
-  mg_2016->Add(gr_syst_lhcb);
+  mg_2016->Add(gr_stat_2016);
 
-  TLegend *leg_2016 = new TLegend(0.1, 0.1, 0.4, 0.3);
+  TLegend *leg_2016 = new TLegend(0.1, 0.1, 0.3, 0.2);
   leg_2016->SetFillColor(0);
-  leg_2016->AddEntry(gr_stat_2016, "Stat. Error (CMS Run 2)", "lp");
-  leg_2016->AddEntry(gr_syst_2016, "Syst. Error (CMS Run 2)", "lp");
-  leg_2016->AddEntry(gr_stat_8TeV, "Stat. Error (CMS Run 1)", "lp");
-  leg_2016->AddEntry(gr_syst_8TeV, "Syst. Error (CMS Run 1)", "lp");
-  leg_2016->AddEntry(gr_stat_lhcb, "Stat. Error (LHCb Run 1)", "lp");
-  leg_2016->AddEntry(gr_syst_lhcb, "Syst. Error (LHCb Run 1)", "lp");
+  leg_2016->AddEntry(gr_stat_2016, "this work", "lp");
+  leg_2016->AddEntry(gr_stat_8TeV, "CMS Run 1", "lp");
+  //leg_2016->AddEntry(gr_stat_lhcb, "LHCb Run 1", "lp");
 
   TCanvas c_2016;
   c_2016.cd();
@@ -385,26 +382,17 @@ void branching_fraction(){
   TMultiGraph* mg_2017 = new TMultiGraph();
 
   TGraphErrors* gr_stat_2017 = new TGraphErrors(n_q2Bin,q2Bins_half,dB_dq_2017,q2Bins_err,dB_dq_stat_2017);
-  gr_stat_2017->SetLineColor(kBlack);
+  gr_stat_2017->SetLineColor(kRed);
 
-  TGraphErrors* gr_syst_2017 = new TGraphErrors(n_q2Bin,q2Bins_half,dB_dq_2017,q2Bins_err,dB_dq_syst_2017);
-  gr_syst_2017->SetLineColor(kRed);
-
-  mg_2017->Add(gr_syst_2017);
-  mg_2017->Add(gr_stat_2017);
+  //mg_2017->Add(gr_stat_lhcb);
   mg_2017->Add(gr_stat_8TeV);
-  mg_2017->Add(gr_syst_8TeV);
-  mg_2017->Add(gr_stat_lhcb);
-  mg_2017->Add(gr_syst_lhcb);
+  mg_2017->Add(gr_stat_2017);
 
-  TLegend *leg_2017 = new TLegend(0.1, 0.1, 0.4, 0.3);
+  TLegend *leg_2017 = new TLegend(0.1, 0.1, 0.3, 0.2);
   leg_2017->SetFillColor(0);
-  leg_2017->AddEntry(gr_stat_2017, "Stat. Error (CMS Run 2)", "lp");
-  leg_2017->AddEntry(gr_syst_2017, "Syst. Error (CMS Run 2)", "lp");
-  leg_2017->AddEntry(gr_stat_8TeV, "Stat. Error (CMS Run 1)", "lp");
-  leg_2017->AddEntry(gr_syst_8TeV, "Syst. Error (CMS Run 1)", "lp");
-  leg_2017->AddEntry(gr_stat_lhcb, "Stat. Error (LHCb Run 1)", "lp");
-  leg_2017->AddEntry(gr_syst_lhcb, "Syst. Error (LHCb Run 1)", "lp");
+  leg_2017->AddEntry(gr_stat_2017, "this work", "lp");
+  leg_2017->AddEntry(gr_stat_8TeV, "CMS Run 1", "lp");
+  //leg_2017->AddEntry(gr_stat_lhcb, "LHCb Run 1", "lp");
 
   TCanvas c_2017;
   c_2017.cd();
@@ -436,26 +424,17 @@ void branching_fraction(){
   TMultiGraph* mg_2018 = new TMultiGraph();
 
   TGraphErrors* gr_stat_2018 = new TGraphErrors(n_q2Bin,q2Bins_half,dB_dq_2018,q2Bins_err,dB_dq_stat_2018);
-  gr_stat_2018->SetLineColor(kBlack);
+  gr_stat_2018->SetLineColor(kRed);
 
-  TGraphErrors* gr_syst_2018 = new TGraphErrors(n_q2Bin,q2Bins_half,dB_dq_2018,q2Bins_err,dB_dq_syst_2018);
-  gr_syst_2018->SetLineColor(kRed);
-
-  mg_2018->Add(gr_syst_2018);
-  mg_2018->Add(gr_stat_2018);
+  //mg_2018->Add(gr_stat_lhcb);
   mg_2018->Add(gr_stat_8TeV);
-  mg_2018->Add(gr_syst_8TeV);
-  mg_2018->Add(gr_stat_lhcb);
-  mg_2018->Add(gr_syst_lhcb);
+  mg_2018->Add(gr_stat_2018);
 
-  TLegend *leg_2018 = new TLegend(0.1, 0.1, 0.4, 0.3);
+  TLegend *leg_2018 = new TLegend(0.1, 0.1, 0.3, 0.2);
   leg_2018->SetFillColor(0);
-  leg_2018->AddEntry(gr_stat_2018, "Stat. Error (CMS Run 2)", "lp");
-  leg_2018->AddEntry(gr_syst_2018, "Syst. Error (CMS Run 2)", "lp");
-  leg_2018->AddEntry(gr_stat_8TeV, "Stat. Error (CMS Run 1)", "lp");
-  leg_2018->AddEntry(gr_syst_8TeV, "Syst. Error (CMS Run 1)", "lp");
-  leg_2018->AddEntry(gr_stat_lhcb, "Stat. Error (LHCb Run 1)", "lp");
-  leg_2018->AddEntry(gr_syst_lhcb, "Syst. Error (LHCb Run 1)", "lp");
+  leg_2018->AddEntry(gr_stat_2018, "this work", "lp");
+  leg_2018->AddEntry(gr_stat_8TeV, "CMS Run 1", "lp");
+  //leg_2018->AddEntry(gr_stat_lhcb, "LHCb Run 1", "lp");
 
   TCanvas c_2018;
   c_2018.cd();
@@ -477,10 +456,12 @@ void branching_fraction(){
   gr8P->SetFillColorAlpha(kBlack,0.25);
 
   gr8J->Draw("F");
-  gr8P->Draw("F");
+  gr7P->Draw("F");
 
   c_2018.SaveAs("~/public/UML-fit/Branching_fraction/diff_b_2018.gif");
   c_2018.SaveAs("~/public/UML-fit/Branching_fraction/diff_b_2018.pdf");
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   double yields_CMS[] = {84., 145., 117., 254., 163583., 362., 10508., 225.};
   double yields_CMS_stat[] = {11., 16., 15., 21., 503., 25., 135., 18.};
@@ -509,49 +490,49 @@ void branching_fraction(){
     relative_2016[i] = yields_errors_2016[i]/yields_2016[i];
     relative_2017[i] = yields_errors_2017[i]/yields_2017[i];
     relative_2018[i] = yields_errors_2018[i]/yields_2018[i];
-    relative[i] = yields_average_stat[i]/yields_average[i];
+    relative[i] = yields_sum_stat[i]/yields_sum[i];
     CMS_relative[i] = yields_CMS_stat[i]/yields_CMS[i];
 
     relative_syst_2016[i] = yield_syst_2016[i]/yields_2016[i];
     relative_syst_2017[i] = yield_syst_2017[i]/yields_2017[i];
     relative_syst_2018[i] = yield_syst_2018[i]/yields_2018[i];
-    relative_syst[i] = yields_average_syst[i]/yields_average[i];
+    relative_syst[i] = yields_sum_syst[i]/yields_sum[i];
   }
  
   TGraph* year_2016 = new TGraph(n_q2Bin, bins, relative_2016);
   TGraph* year_2017 = new TGraph(n_q2Bin, bins, relative_2017);
   TGraph* year_2018 = new TGraph(n_q2Bin, bins, relative_2018);
-  TGraph* year_average = new TGraph(n_q2Bin, bins, relative);
+  TGraph* year_sum = new TGraph(n_q2Bin, bins, relative);
   TGraph* year_CMS = new TGraph(n_q2Bin, bins, CMS_relative);
 
   year_2016->SetLineColor(kBlue);
   year_2017->SetLineColor(kOrange+7);
   year_2018->SetLineColor(kGreen+3);
-  year_average->SetLineColor(kBlack);
+  year_sum->SetLineColor(kBlack);
   year_CMS->SetLineColor(kRed);
 
   year_2016->SetLineWidth(2); 
   year_2017->SetLineWidth(2);
   year_2018->SetLineWidth(2);
-  year_average->SetLineWidth(2);
+  year_sum->SetLineWidth(2);
   year_CMS->SetLineWidth(2);
 
   year_2016->SetMarkerStyle(21);
   year_2017->SetMarkerStyle(22);
   year_2018->SetMarkerStyle(20);
-  year_average->SetMarkerStyle(23);
+  year_sum->SetMarkerStyle(23);
   year_CMS->SetMarkerStyle(33);
 
   year_2016->SetMarkerColor(kBlue);
   year_2017->SetMarkerColor(kOrange+7);
   year_2018->SetMarkerColor(kGreen+3);
-  year_average->SetMarkerColor(kBlack);
+  year_sum->SetMarkerColor(kBlack);
   year_CMS->SetMarkerColor(kRed);
 
   mg1->Add(year_2016);
   mg1->Add(year_2017);
   mg1->Add(year_2018);
-  mg1->Add(year_average);
+  mg1->Add(year_sum);
   mg1->Add(year_CMS);
 
   TLegend *leg2 = new TLegend(0.7, 0.7, 0.9, 0.9);
@@ -559,7 +540,7 @@ void branching_fraction(){
   leg2->AddEntry(year_2016, "2016", "lp");
   leg2->AddEntry(year_2017, "2017", "lp");
   leg2->AddEntry(year_2018, "2018", "lp"); 
-  leg2->AddEntry(year_average, "2016+2017+2018", "lp");     
+  leg2->AddEntry(year_sum, "2016+2017+2018", "lp");     
   leg2->AddEntry(year_CMS, "2012", "lp");     
 
   TCanvas c2;
