@@ -26,16 +26,16 @@ void efficiency(int year){
   if(year < 2016 || year > 2018){return;}
 
   // RECO MC (PUweight)
-  TString input_file_mc_cuts_jpsi = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iMC_JPSI.root",year,year);
-  TString input_file_mc_cuts_psi = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iMC_PSI.root",year,year);
-  TString input_file_mc_cuts_lmnr = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iMC_LMNR.root",year,year);
+  TString input_file_mc_cuts_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_JPSI.root",year,year);
+  TString input_file_mc_cuts_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_PSI.root",year,year);
+  TString input_file_mc_cuts_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_LMNR.root",year,year);
   TFile* f_mc_cuts_jpsi = new TFile(input_file_mc_cuts_jpsi);
   TFile* f_mc_cuts_psi = new TFile(input_file_mc_cuts_psi);
   TFile* f_mc_cuts_lmnr = new TFile(input_file_mc_cuts_lmnr);
 
-  TString input_file_mc_nocuts_jpsi = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iGEN_MC_JPSI.root",year,year);
-  TString input_file_mc_nocuts_psi = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iGEN_MC_PSI.root",year,year);
-  TString input_file_mc_nocuts_lmnr = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iGEN_MC_LMNR.root",year,year);
+  TString input_file_mc_nocuts_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_JPSI.root",year,year);
+  TString input_file_mc_nocuts_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_PSI.root",year,year);
+  TString input_file_mc_nocuts_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_LMNR.root",year,year);
   TFile* f_mc_nocuts_jpsi = new TFile(input_file_mc_nocuts_jpsi);
   TFile* f_mc_nocuts_psi = new TFile(input_file_mc_nocuts_psi);
   TFile* f_mc_nocuts_lmnr = new TFile(input_file_mc_nocuts_lmnr);
@@ -49,9 +49,9 @@ void efficiency(int year){
   TTree* t_nocuts_lmnr = (TTree*)f_mc_nocuts_lmnr->Get("ntuple");
 
   // GEN-FILTER MC (acceptance)
-  TString input_file_mc_gen_jpsi = "/eos/cms/store/user/fiorendi/p5prime/2016/skims/GEN_NoFilter/newphi/GEN_BFilter_B0JpsiKstar.root";
-  TString input_file_mc_gen_psi = "/eos/cms/store/user/fiorendi/p5prime/2016/skims/GEN_NoFilter/newphi/GEN_BFilter_B0PsiKstar.root";
-  TString input_file_mc_gen_lmnr = "/eos/cms/store/user/fiorendi/p5prime/2016/skims/GEN_NoFilter/newphi/GEN_BFilter_B0MuMuKstar_p*.root/ntuple";
+  TString input_file_mc_gen_jpsi = "/home/t3cms/mcarolina/samples/Anomalies/GEN_BFilter_B0JpsiKstar.root";
+  TString input_file_mc_gen_psi = "/home/t3cms/mcarolina/samples/Anomalies/GEN_BFilter_B0PsiKstar.root";
+  TString input_file_mc_gen_lmnr = "/home/t3cms/mcarolina/samples/Anomalies/GEN_BFilter_B0MuMuKstar_p*.root/ntuple";
   TFile* f_mc_gen_jpsi = new TFile(input_file_mc_gen_jpsi);
   TFile* f_mc_gen_psi = new TFile(input_file_mc_gen_psi);
   TChain* t_gen_lmnr = new TChain();
@@ -61,14 +61,14 @@ void efficiency(int year){
   t_gen_lmnr->Add(input_file_mc_gen_lmnr);
 
   // data(splot)/MC weights for systematics
-  TFile* weight_b0 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b0.root",year));
-  TFile* weight_b1 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b1.root",year));
-  TFile* weight_b2 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b2.root",year));
-  TFile* weight_b3 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b3.root",year));
-  TFile* weight_b4 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b4.root",year));
-  TFile* weight_b5 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b5.root",year));
-  TFile* weight_b6 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b6.root",year));
-  TFile* weight_b7 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b7.root",year));
+  TFile* weight_b0 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b0.root",year));
+  TFile* weight_b1 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b1.root",year));
+  TFile* weight_b2 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b2.root",year));
+  TFile* weight_b3 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b3.root",year));
+  TFile* weight_b4 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b4.root",year));
+  TFile* weight_b5 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b5.root",year));
+  TFile* weight_b6 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b6.root",year));
+  TFile* weight_b7 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b7.root",year));
 
   TH1F* histo_wei_b0 = (TH1F*)weight_b0->Get("weights_bdt_prob");
   TH1F* histo_wei_b1 = (TH1F*)weight_b1->Get("weights_bdt_prob");

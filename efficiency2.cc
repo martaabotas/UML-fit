@@ -28,9 +28,9 @@ void efficiency2(int year){
   if(year < 2016 || year > 2018){return;}
 
   // RECO 
-  TString input_file_reco_jpsi = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iMC_JPSI.root",year,year);
-  TString input_file_reco_psi = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iMC_PSI.root",year,year);
-  TString input_file_reco_lmnr = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iMC_LMNR.root",year,year);
+  TString input_file_reco_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_JPSI.root",year,year);
+  TString input_file_reco_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_PSI.root",year,year);
+  TString input_file_reco_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_LMNR.root",year,year);
   TFile* f_reco_jpsi = new TFile(input_file_reco_jpsi);
   TFile* f_reco_psi = new TFile(input_file_reco_psi);
   TFile* f_reco_lmnr = new TFile(input_file_reco_lmnr);
@@ -40,9 +40,9 @@ void efficiency2(int year){
   TTree* t_reco_lmnr = (TTree*)f_reco_lmnr->Get("ntuple");
 
   // GEN PU
-  TString input_file_genpu_jpsi = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iGEN_MC_JPSI.root",year,year);
-  TString input_file_genpu_psi = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iGEN_MC_PSI.root",year,year);
-  TString input_file_genpu_lmnr = Form("/eos/cms/store/user/fiorendi/p5prime/%i/skims/newphi/%iGEN_MC_LMNR.root",year,year);
+  TString input_file_genpu_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_JPSI.root",year,year);
+  TString input_file_genpu_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_PSI.root",year,year);
+  TString input_file_genpu_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_LMNR.root",year,year);
   TFile* f_genpu_jpsi = new TFile(input_file_genpu_jpsi);
   TFile* f_genpu_psi = new TFile(input_file_genpu_psi);
   TFile* f_genpu_lmnr = new TFile(input_file_genpu_lmnr);
@@ -52,9 +52,9 @@ void efficiency2(int year){
   TTree* t_genpu_lmnr = (TTree*)f_genpu_lmnr->Get("ntuple");
 
   // GEN
-  TString input_file_mc_gen_jpsi = "/eos/cms/store/user/fiorendi/p5prime/2016/skims/GEN_NoFilter/newphi/GEN_BFilter_B0JpsiKstar.root";
-  TString input_file_mc_gen_psi = "/eos/cms/store/user/fiorendi/p5prime/2016/skims/GEN_NoFilter/newphi/GEN_BFilter_B0PsiKstar.root";
-  TString input_file_mc_gen_lmnr = "/eos/cms/store/user/fiorendi/p5prime/2016/skims/GEN_NoFilter/newphi/GEN_BFilter_B0MuMuKstar_p*.root/ntuple";
+  TString input_file_mc_gen_jpsi = "/home/t3cms/mcarolina/samples/Anomalies/GEN_BFilter_B0JpsiKstar.root";
+  TString input_file_mc_gen_psi = "/home/t3cms/mcarolina/samples/Anomalies/GEN_BFilter_B0PsiKstar.root";
+  TString input_file_mc_gen_lmnr = "/home/t3cms/mcarolina/samples/Anomalies/GEN_BFilter_B0MuMuKstar_p*.root/ntuple";
   TFile* f_mc_gen_jpsi = new TFile(input_file_mc_gen_jpsi);
   TFile* f_mc_gen_psi = new TFile(input_file_mc_gen_psi);
   TChain* t_gen_lmnr = new TChain();
@@ -64,14 +64,14 @@ void efficiency2(int year){
   t_gen_lmnr->Add(input_file_mc_gen_lmnr);
 
   // MC vs SP weights (bEta)
-  TFile* weight_b0 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b0.root",year));
-  TFile* weight_b1 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b1.root",year));
-  TFile* weight_b2 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b2.root",year));
-  TFile* weight_b3 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b3.root",year));
-  TFile* weight_b4 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b4.root",year));
-  TFile* weight_b5 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b5.root",year));
-  TFile* weight_b6 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b6.root",year));
-  TFile* weight_b7 = new TFile(Form("~/public/UML-fit/results/mc_validation_plots/weights/weights_%i_b7.root",year));
+  TFile* weight_b0 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b0.root",year));
+  TFile* weight_b1 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b1.root",year));
+  TFile* weight_b2 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b2.root",year));
+  TFile* weight_b3 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b3.root",year));
+  TFile* weight_b4 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b4.root",year));
+  TFile* weight_b5 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b5.root",year));
+  TFile* weight_b6 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b6.root",year));
+  TFile* weight_b7 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b7.root",year));
 
   TH1F* histo_wei_b0 = (TH1F*)weight_b0->Get("weights_bEta");
   TH1F* histo_wei_b1 = (TH1F*)weight_b1->Get("weights_bEta");
@@ -587,32 +587,32 @@ void efficiency2(int year){
   TCanvas c_eff_num;
   c_eff_num.cd();
   eff_num->Draw();
-  c_eff_num.SaveAs(Form("~/public/UML-fit/Efficiency2/histo_eff_num_%i.gif",year));
+  c_eff_num.SaveAs(Form("./Efficiency/histo_eff_num_%i.gif",year));
 
   TCanvas c_eff_den;
   c_eff_den.cd();
   eff_den->Draw();
-  c_eff_den.SaveAs(Form("~/public/UML-fit/Efficiency2/histo_eff_den_%i.gif",year));
+  c_eff_den.SaveAs(Form("./Efficiency/histo_eff_den_%i.gif",year));
 
   TCanvas c_eff_wei_num;
   c_eff_wei_num.cd();
   eff_wei_num->Draw();
-  c_eff_wei_num.SaveAs(Form("~/public/UML-fit/Efficiency2/histo_eff_wei_num_%i.gif",year));
+  c_eff_wei_num.SaveAs(Form("./Efficiency/histo_eff_wei_num_%i.gif",year));
 
   TCanvas c_eff_wei_den;
   c_eff_wei_den.cd();
   eff_wei_den->Draw();
-  c_eff_wei_den.SaveAs(Form("~/public/UML-fit/Efficiency2/histo_eff_wei_den_%i.gif",year));
+  c_eff_wei_den.SaveAs(Form("./Efficiency/histo_eff_wei_den_%i.gif",year));
 
   TCanvas c_acc_num;
   c_acc_num.cd();
   acc_num->Draw();
-  c_acc_num.SaveAs(Form("~/public/UML-fit/Efficiency2/histo_acc_num_%i.gif",year));
+  c_acc_num.SaveAs(Form("./Efficiency/histo_acc_num_%i.gif",year));
 
   TCanvas c_acc_den;
   c_acc_den.cd();
   acc_den->Draw();
-  c_acc_den.SaveAs(Form("~/public/UML-fit/Efficiency2/histo_acc_den_%i.gif",year));
+  c_acc_den.SaveAs(Form("./Efficiency/histo_acc_den_%i.gif",year));
 
   TEfficiency* efficiency = new TEfficiency(*eff_num, *eff_den);
   TEfficiency* weighted = new TEfficiency(*eff_wei_num, *eff_wei_den);
@@ -630,42 +630,42 @@ void efficiency2(int year){
   c_eff.cd();
   efficiency->SetTitle(Form("Efficiency - %i",year));
   efficiency->Draw("AP");  
-  c_eff.SaveAs(Form("~/public/UML-fit/Efficiency2/efficiency_%i.gif",year));
+  c_eff.SaveAs(Form("./Efficiency/efficiency_%i.gif",year));
 
   TCanvas c_wei;
   c_wei.cd();
   weighted->SetTitle(Form("Weighted efficiency - %i",year));
   weighted->Draw("AP");   
-  c_wei.SaveAs(Form("~/public/UML-fit/Efficiency2/weighted_%i.gif",year));
+  c_wei.SaveAs(Form("./Efficiency/weighted_%i.gif",year));
 
   TCanvas c_acc;
   c_acc.cd();
   acceptance->SetTitle(Form("Acceptance - %i",year));
   acceptance->Draw("AP");  
-  c_acc.SaveAs(Form("~/public/UML-fit/Efficiency2/acceptance_%i.gif",year));
+  c_acc.SaveAs(Form("./Efficiency/acceptance_%i.gif",year));
 
   TCanvas c_eff_x_acc;
   c_eff_x_acc.cd();
   eff_x_acc->SetTitle(Form("Efficiency x Acceptance - %i",year));
   eff_x_acc->Draw("AP");
-  c_eff_x_acc.SaveAs(Form("~/public/UML-fit/Efficiency2/eff_x_acc_%i.gif",year));
+  c_eff_x_acc.SaveAs(Form("./Efficiency/eff_x_acc_%i.gif",year));
 
-  TFile* f_eff = new TFile(Form("~/public/UML-fit/Efficiency2/eff_%i.root",year),"RECREATE");
+  TFile* f_eff = new TFile(Form("./Efficiency/eff_%i.root",year),"RECREATE");
   f_eff->cd();
   efficiency->Write();
   f_eff->Close();
 
-  TFile* f_wei = new TFile(Form("~/public/UML-fit/Efficiency2/wei_%i.root",year),"RECREATE");
+  TFile* f_wei = new TFile(Form("./Efficiency/wei_%i.root",year),"RECREATE");
   f_wei->cd();
   weighted->Write();
   f_wei->Close();
 
-  TFile* f_acc = new TFile(Form("~/public/UML-fit/Efficiency2/acc_%i.root",year),"RECREATE");
+  TFile* f_acc = new TFile(Form("./Efficiency/acc_%i.root",year),"RECREATE");
   f_acc->cd();
   acceptance->Write();
   f_acc->Close();
 
-  TFile* f_eff_x_acc = new TFile(Form("~/public/UML-fit/Efficiency2/eff_x_acc_%i.root",year),"RECREATE");
+  TFile* f_eff_x_acc = new TFile(Form("./Efficiency/eff_x_acc_%i.root",year),"RECREATE");
   f_eff_x_acc->cd();
   eff_x_acc->Write();
   f_eff_x_acc->Close();

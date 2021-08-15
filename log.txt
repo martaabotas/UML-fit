@@ -1,0 +1,50 @@
+nohup: ignoring input
+
+Processing efficiency2.cc(2016)...
+
+[1mRooFit v3.60 -- Developed by Wouter Verkerke and David Kirkby[0m 
+                Copyright (C) 2000-2013 NIKHEF, University of California & Stanford University
+                All rights reserved, please read http://roofit.sourceforge.net/license.txt
+
+In file included from input_line_10:1:
+/home/t3cms/u21mbotas/efficiency/UML-fit/efficiency2.cc:31:101: warning: data argument not used by format string [-Wformat-extra-args]
+  TString input_file_reco_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_JPSI.root",year,year);
+                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ^
+/home/t3cms/u21mbotas/efficiency/UML-fit/efficiency2.cc:32:99: warning: data argument not used by format string [-Wformat-extra-args]
+  TString input_file_reco_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_PSI.root",year,year);
+                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ^
+/home/t3cms/u21mbotas/efficiency/UML-fit/efficiency2.cc:33:101: warning: data argument not used by format string [-Wformat-extra-args]
+  TString input_file_reco_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_LMNR.root",year,year);
+                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ^
+/home/t3cms/u21mbotas/efficiency/UML-fit/efficiency2.cc:43:106: warning: data argument not used by format string [-Wformat-extra-args]
+  TString input_file_genpu_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_JPSI.root",year,year);
+                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ^
+/home/t3cms/u21mbotas/efficiency/UML-fit/efficiency2.cc:44:104: warning: data argument not used by format string [-Wformat-extra-args]
+  TString input_file_genpu_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_PSI.root",year,year);
+                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ^
+/home/t3cms/u21mbotas/efficiency/UML-fit/efficiency2.cc:45:106: warning: data argument not used by format string [-Wformat-extra-args]
+  TString input_file_genpu_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_LMNR.root",year,year);
+                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~      ^
+RECO JPSI
+GEN PU JPSI
+RECO PSI
+GEN PU PSI
+RECO LMNR
+GEN PU LMNR
+GEN JPSI
+GEN PSI
+GEN LMNR
+Info in <TCanvas::Print>: gif file ./Efficiency/histo_eff_num_2016.gif has been created
+Info in <TCanvas::Print>: gif file ./Efficiency/histo_eff_den_2016.gif has been created
+Info in <TCanvas::Print>: gif file ./Efficiency/histo_eff_wei_num_2016.gif has been created
+Info in <TCanvas::Print>: gif file ./Efficiency/histo_eff_wei_den_2016.gif has been created
+Info in <TCanvas::Print>: gif file ./Efficiency/histo_acc_num_2016.gif has been created
+Info in <TCanvas::Print>: gif file ./Efficiency/histo_acc_den_2016.gif has been created
+Info in <TEfficiency::TEfficiency>: given histograms are filled with weights
+Info in <TROOT::TEfficiency::SetUseWeightedEvents>: Handle weighted events for computing efficiency
+Info in <TCanvas::Print>: gif file ./Efficiency/efficiency_2016.gif has been created
+Warning in <TEfficiency::GetEfficiencyErrorLow>: frequentist confidence intervals for weights are only supported by the normal approximation
+Info in <TEfficiency::GetEfficiencyErrorLow>: setting statistic option to kFNormal
+Info in <TCanvas::Print>: gif file ./Efficiency/weighted_2016.gif has been created
+Info in <TCanvas::Print>: gif file ./Efficiency/acceptance_2016.gif has been created
+Info in <TCanvas::Print>: gif file ./Efficiency/eff_x_acc_2016.gif has been created
