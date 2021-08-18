@@ -24,6 +24,5 @@
    graph->SetName("Graph");
    graph->SetTitle("Graph");
    graph->SetFillStyle(1000);
-   graph->SetMarkerStyle(3);
    graph->Draw("");
 }
