@@ -1,0 +1,29 @@
+{
+//========= Macro generated from object: Graph/Graph
+//========= by ROOT version6.12/06
+   
+   Double_t Graph_fx1[8] = {
+   0.0208899,
+   0.0226913,
+   0.0233075,
+   0.0233151,
+   0.0233144,
+   0.0228419,
+   0.0218268,
+   0.0221911};
+   Double_t Graph_fy1[8] = {
+   0.0232847,
+   0.0246535,
+   0.0257626,
+   0.0255975,
+   0.0244544,
+   0.022548,
+   0.0229836,
+   0.0231055};
+   TGraph *graph = new TGraph(8,Graph_fx1,Graph_fy1);
+   graph->SetName("Graph");
+   graph->SetTitle("Graph");
+   graph->SetFillStyle(1000);
+   graph->SetMarkerStyle(3);
+   graph->Draw("");
+}
