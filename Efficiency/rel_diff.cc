@@ -26,9 +26,6 @@ void rel_diff(int year) {
   TFile* f_eff = new TFile(input_file_eff);
   TFile* f_wei = new TFile(input_file_wei);
 
-  /*TFile* f_eff = new TFile("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/eff_2016.root");
-    TFile* f_wei = new TFile("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/wei_2016.root");*/
-
   TEfficiency* eff = (TEfficiency*)f_eff->Get("eff_den_clone"); //these are for 2016
   TEfficiency* wei = (TEfficiency*)f_wei->Get("eff_wei_den_clone");
 
