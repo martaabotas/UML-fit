@@ -26,7 +26,7 @@ void rel_diff(int year) {
   TFile* f_eff = new TFile(input_file_eff);
   TFile* f_wei = new TFile(input_file_wei);
 
-  TEfficiency* eff = (TEfficiency*)f_eff->Get("eff_den_clone"); //these are for 2016
+  TEfficiency* eff = (TEfficiency*)f_eff->Get("eff_den_clone");
   TEfficiency* wei = (TEfficiency*)f_wei->Get("eff_wei_den_clone");
 
   Double_t efficiency[8];
