@@ -20,15 +20,15 @@ void rel_diff(int year) {
 
   if(year < 2016 || year > 2018) {return;}
 
-  TString input_file_eff = Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/eff_%i.root",year);
-  TString input_file_wei = Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/wei_%i.root",year);
+  TString input_file_eff_bEta = Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/eff_bEta_%i.root",year);
+  TString input_file_wei_bEta = Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/wei_bEta_%i.root",year);
 
-  TFile* f_eff = new TFile(input_file_eff);
-  TFile* f_wei = new TFile(input_file_wei);
+  TFile* f_eff_bEta = new TFile(input_file_eff_bEta);
+  TFile* f_wei_bEta = new TFile(input_file_wei_bEta);
 
-  TEfficiency* eff = (TEfficiency*)f_eff->Get("eff_den_clone");
-  TEfficiency* wei = (TEfficiency*)f_wei->Get("eff_wei_den_clone");
-
+  TEfficiency* eff_bEta = (TEfficiency*)f_eff_bEta->Get("eff_den_clone");
+  TEfficiency* wei_bEta = (TEfficiency*)f_wei_bEta->Get("eff_wei_den_clone");
+  //change BETA
   Double_t efficiency[8];
   Double_t wei_efficiency[8];
   Double_t diff[8];
@@ -41,9 +41,7 @@ void rel_diff(int year) {
   for(int i=0; i<n; i++) {
 
     efficiency[i] = eff->GetEfficiency(i+1);
-    cout << "eff - " << efficiency[i] << endl;
     wei_efficiency[i]= wei->GetEfficiency(i+1);
-    cout << "wei - " << wei_efficiency[i] << endl;
     diff[i] = abs(efficiency[i]-wei_efficiency[i]);
     cout << "diff - " << diff[i] << endl;
     relative_diff[i] = diff[i]/efficiency[i];
