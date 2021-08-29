@@ -5,14 +5,22 @@
 #include <TCanvas.h>
 #include <TAxis.h>
 #include <TGraph.h>
+#include <TGraphPainter.h>
+#include <TLine.h>
+#include <TStyle.h>
+#include <TLatex.h>
+#include <TMultiGraph.h>
 #include <iomanip>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <TAttMarker.h>
 #include <TChain.h>
 #include <TGraphErrors.h>
 #include <RooWorkspace.h>
 #include <RooDataSet.h>
+#include <RooFitResult.h>
 #include <TH1F.h>
 #include <cstdlib>
 
@@ -37,9 +45,7 @@ void rel_diff(int year) {
   Double_t bins[] = {0, 1, 2, 3, 4, 5, 6, 7};
   Int_t n = 8;
 
-  TCanvas *c1 = new TCanvas("c1","All",200,10,500,300);
-  
-  TMultiGraph *mg = new TMultiGraph("mg","mg");
+  TCanvas *c1 = new TCanvas("c1","Relative Difference",200,10,500,300);
   
   for(int i=0; i<n; i++) {
 
@@ -50,7 +56,7 @@ void rel_diff(int year) {
     diff[i] = abs(efficiency[i]-wei_efficiency[i]);
     cout << "diff - " << diff[i] << endl;
     relative_diff[i] = diff[i]/efficiency[i];
-    cout << "rel dif - " << relative_diff[i]*100 << " %" << endl;
+    cout << "rel diff - " << relative_diff[i]*100 << " %" << endl;
     cout << " " << endl;
     
   }
@@ -61,6 +67,9 @@ void rel_diff(int year) {
   gr1->SetMarkerColor(kBlue);
   gr1->SetMarkerStyle(kFullDotLarge);
   gr1->SetTitle("Efficiency relative difference");
+  c1->SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i.gif",year));
+  
+  TMultiGraph *mg = new TMultiGraph();
   
   TGraph* gr2 = new TGraph(n,bins,efficiency);
   gr2->SetName("gr2");
@@ -76,12 +85,23 @@ void rel_diff(int year) {
   gr3->SetMarkerStyle(kFullDotLarge);
   gr3->SetTitle("Weighted Efficiency");
   
-  mg->Add(gr1);
   mg->Add(gr2);
   mg->Add(gr3);
-  mg->SetTitle("Efficiencies; q^{2} bins; Efficiency");
-  mg->Draw("AP");
-  c1->BuildLegend();
-  c1->SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i.gif",year));
+  
+  auto legend = new TLegend(0.65,0.7,0.9,0.88);
+  legend->Draw();
+  legend->AddEntry("gr2","Efficiency","p");
+  legend->AddEntry("gr3","Weighted Efficiency","p");
+  legend->SetBorderSize(0);
+  
+  TCanvas c2("c2","All",200,10,500,300);
+  c2.cd();
 
+  mg->Draw("AP");
+  legend->Draw();
+  mg->GetYaxis()->SetTitle("Efficiency");
+  mg->GetXaxis()->SetTitle("q^{2} bins");
+
+  c2.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/all_%i.gif",year));
+  
 }
