@@ -45,7 +45,7 @@ void rel_diff(int year) {
   Double_t bins[] = {0, 1, 2, 3, 4, 5, 6, 7};
   Int_t n = 8;
 
-  TCanvas *c1 = new TCanvas("c1","Relative Difference",200,10,500,300);
+  TCanvas c1;
   
   for(int i=0; i<n; i++) {
 
@@ -66,8 +66,10 @@ void rel_diff(int year) {
   gr1->Draw("AP");
   gr1->SetMarkerColor(kBlue);
   gr1->SetMarkerStyle(kFullDotLarge);
-  gr1->SetTitle("Efficiency relative difference");
-  c1->SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i.gif",year));
+  gr1->SetTitle("");
+  gr1->GetYaxis()->SetTitle("Relative Difference");
+  gr1->GetXaxis()->SetTitle("q^{2} bins");
+  c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i.gif",year));
   
   TMultiGraph *mg = new TMultiGraph();
   
@@ -94,7 +96,7 @@ void rel_diff(int year) {
   legend->AddEntry("gr3","Weighted Efficiency","p");
   legend->SetBorderSize(0);
   
-  TCanvas c2("c2","All",200,10,500,300);
+  TCanvas c2;
   c2.cd();
 
   mg->Draw("AP");
