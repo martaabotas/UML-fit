@@ -43,6 +43,7 @@ void rel_diff(int year) {
   Double_t relative_diff[8];
   
   Double_t bins[] = {0, 1, 2, 3, 4, 5, 6, 7};
+  Double_t q2Bins[] = {1, 2, 4.3, 6, 8.68, 10.09, 12.86, 14.18, 16};
   Int_t n = 8;
 
   TCanvas c1;
@@ -61,7 +62,7 @@ void rel_diff(int year) {
     
   }
   
-  TGraph* gr1 = new TGraph(n,bins,relative_diff);
+  TGraph* gr1 = new TGraph(n,q2Bins,relative_diff);
   gr1->SetName("gr1");
   gr1->Draw("AP");
   gr1->SetMarkerColor(kBlue);
@@ -69,18 +70,24 @@ void rel_diff(int year) {
   gr1->SetTitle("");
   gr1->GetYaxis()->SetTitle("Relative Difference");
   gr1->GetXaxis()->SetTitle("q^{2} bins");
+  
+  auto leg1 = new TLegend(0.65,0.8,0.9,0.88);
+  leg1->Draw();
+  leg1->AddEntry("gr1","weights_bEta","p");
+  leg1->SetBorderSize(0);
+
   c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i.gif",year));
   
   TMultiGraph *mg = new TMultiGraph();
   
-  TGraph* gr2 = new TGraph(n,bins,efficiency);
+  TGraph* gr2 = new TGraph(n,q2Bins,efficiency);
   gr2->SetName("gr2");
   gr2->Draw("AP");
   gr2->SetMarkerColor(kRed);
   gr2->SetMarkerStyle(kFullDotLarge);
   gr2->SetTitle("Efficiency");
   
-  TGraph* gr3 = new TGraph(n,bins,wei_efficiency);
+  TGraph* gr3 = new TGraph(n,q2Bins,wei_efficiency);
   gr3->SetName("gr3");
   gr3->Draw("AP");
   gr3->SetMarkerColor(kGreen);
@@ -90,17 +97,17 @@ void rel_diff(int year) {
   mg->Add(gr2);
   mg->Add(gr3);
   
-  auto legend = new TLegend(0.65,0.7,0.9,0.88);
-  legend->Draw();
-  legend->AddEntry("gr2","Efficiency","p");
-  legend->AddEntry("gr3","Weighted Efficiency","p");
-  legend->SetBorderSize(0);
+  auto leg2 = new TLegend(0.65,0.7,0.9,0.88);
+  leg2->Draw();
+  leg2->AddEntry("gr2","Efficiency","p");
+  leg2->AddEntry("gr3","Weighted Efficiency","p");
+  leg2->SetBorderSize(0);
   
   TCanvas c2;
   c2.cd();
 
   mg->Draw("AP");
-  legend->Draw();
+  leg2->Draw();
   mg->GetYaxis()->SetTitle("Efficiency");
   mg->GetXaxis()->SetTitle("q^{2} bins");
 
