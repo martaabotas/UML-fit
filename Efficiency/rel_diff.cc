@@ -73,7 +73,7 @@ void rel_diff(int year) {
   
   auto leg1 = new TLegend(0.65,0.8,0.9,0.88);
   leg1->Draw();
-  leg1->AddEntry("gr1","weights_bEta","p");
+  leg1->AddEntry("gr1","weights_kstTrkpEta","p");
   leg1->SetBorderSize(0);
 
   c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i.gif",year));
