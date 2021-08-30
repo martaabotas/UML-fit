@@ -44,11 +44,11 @@ void rel_diff(int year) {
   
   Double_t bins[] = {0, 1, 2, 3, 4, 5, 6, 7};
   Double_t q2Bins[] = {1, 2, 4.3, 6, 8.68, 10.09, 12.86, 14.18, 16};
-  Int_t n = 8;
+  Int_t n_bins = 8;
 
   TCanvas c1;
   
-  for(int i=0; i<n; i++) {
+  for(int i=0; i<n_bins; i++) {
 
     efficiency[i] = eff->GetEfficiency(i+1);
     cout << "efficiency - " << efficiency[i] << endl;
@@ -62,32 +62,32 @@ void rel_diff(int year) {
     
   }
   
-  TGraph* gr1 = new TGraph(n,q2Bins,relative_diff);
+  TGraph* gr1 = new TGraph(n_bins,q2Bins,efficiency);
   gr1->SetName("gr1");
   gr1->Draw("AP");
-  gr1->SetMarkerColor(kBlue);
+  gr1->SetMarkerColor(kRed);
   gr1->SetMarkerStyle(kFullDotLarge);
-  gr1->SetTitle("");
-  gr1->GetYaxis()->SetTitle("Relative Difference");
-  gr1->GetXaxis()->SetTitle("q^{2} bins");
+  gr1->SetTitle("Selection Efficiency - 2016");
+  //gr1->GetYaxis()->SetTitle("Relative Difference");
+  //gr1->GetXaxis()->SetTitle("q^{2} bins");
   
-  auto leg1 = new TLegend(0.65,0.8,0.9,0.88);
+  /*auto leg1 = new TLegend(0.65,0.8,0.9,0.88);
   leg1->Draw();
   leg1->AddEntry("gr1","weights_kstTrkpEta","p");
-  leg1->SetBorderSize(0);
+  leg1->SetBorderSize(0);*/
 
-  c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i.gif",year));
+  c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/my_eff_%i.gif",year));
   
-  TMultiGraph *mg = new TMultiGraph();
+  //TMultiGraph *mg = new TMultiGraph();
   
-  TGraph* gr2 = new TGraph(n,q2Bins,efficiency);
+  /*TGraph* gr2 = new TGraph(n_bins,q2Bins,efficiency);
   gr2->SetName("gr2");
   gr2->Draw("AP");
   gr2->SetMarkerColor(kRed);
   gr2->SetMarkerStyle(kFullDotLarge);
-  gr2->SetTitle("Efficiency");
+  gr2->SetTitle("");*/
   
-  TGraph* gr3 = new TGraph(n,q2Bins,wei_efficiency);
+  /*TGraph* gr3 = new TGraph(n_bins,q2Bins,wei_efficiency);
   gr3->SetName("gr3");
   gr3->Draw("AP");
   gr3->SetMarkerColor(kGreen);
@@ -111,6 +111,30 @@ void rel_diff(int year) {
   mg->GetYaxis()->SetTitle("Efficiency");
   mg->GetXaxis()->SetTitle("q^{2} bins");
 
-  c2.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/all_%i.gif",year));
+  c2.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/all_%i.gif",year));*/
   
+  /*TMultiGraph *mg_cp = new TMultiGraph();
+
+  TString input_exist = Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_bEta_%i.gif", year);
+  TFile* g_exist = new TFile(input_exist);
+  
+  TGraph* bEta_graph = (TGraph*)g_exist->Get("rel_diff_bEta:2016.gif");
+  
+  mg_cp->Add(bEta_graph);
+  mg_cp->Add(gr1);
+  
+  auto leg3 = new TLegend(0.65,0.7,0.9,0.88);
+  leg3->Draw();
+  leg3->AddEntry("bEta_graph","weights_bEta","p");
+  leg3->AddEntry("gr1","weights_kstTrkpEta","p");
+  leg3->SetBorderSize(0);
+  
+  TCanvas c3;
+  c3.cd();
+
+  mg->Draw("AP");
+  leg3->Draw();
+
+  c3.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/cp_%i.gif",year));
+  */
 }
