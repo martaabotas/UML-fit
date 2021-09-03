@@ -28,9 +28,9 @@ void efficiency2(int year){
   if(year < 2016 || year > 2018){return;}
 
   // RECO 
-  TString input_file_reco_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_JPSI.root",year,year);
-  TString input_file_reco_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_PSI.root",year,year);
-  TString input_file_reco_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_LMNR.root",year,year);
+  TString input_file_reco_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_JPSI.root",year);
+  TString input_file_reco_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_PSI.root",year);
+  TString input_file_reco_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iMC_LMNR.root",year);
   TFile* f_reco_jpsi = new TFile(input_file_reco_jpsi);
   TFile* f_reco_psi = new TFile(input_file_reco_psi);
   TFile* f_reco_lmnr = new TFile(input_file_reco_lmnr);
@@ -40,9 +40,9 @@ void efficiency2(int year){
   TTree* t_reco_lmnr = (TTree*)f_reco_lmnr->Get("ntuple");
 
   // GEN PU
-  TString input_file_genpu_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_JPSI.root",year,year);
-  TString input_file_genpu_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_PSI.root",year,year);
-  TString input_file_genpu_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_LMNR.root",year,year);
+  TString input_file_genpu_jpsi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_JPSI.root",year);
+  TString input_file_genpu_psi = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_PSI.root",year);
+  TString input_file_genpu_lmnr = Form("/home/t3cms/mcarolina/samples/Anomalies/%iGEN_MC_LMNR.root",year);
   TFile* f_genpu_jpsi = new TFile(input_file_genpu_jpsi);
   TFile* f_genpu_psi = new TFile(input_file_genpu_psi);
   TFile* f_genpu_lmnr = new TFile(input_file_genpu_lmnr);
@@ -63,24 +63,19 @@ void efficiency2(int year){
   TTree* t_gen_psi = (TTree*)f_mc_gen_psi->Get("ntuple");
   t_gen_lmnr->Add(input_file_mc_gen_lmnr);
 
-  // MC vs SP weights (bEta)
-  TFile* weight_b0 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b0.root",year));
-  TFile* weight_b1 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b1.root",year));
-  TFile* weight_b2 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b2.root",year));
-  TFile* weight_b3 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b3.root",year));
-  TFile* weight_b4 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b4.root",year));
-  TFile* weight_b5 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b5.root",year));
-  TFile* weight_b6 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b6.root",year));
-  TFile* weight_b7 = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b7.root",year));
+  TFile* weight_b[8];
 
-  TH1F* histo_wei_b0 = (TH1F*)weight_b0->Get("weights_bEta");
-  TH1F* histo_wei_b1 = (TH1F*)weight_b1->Get("weights_bEta");
-  TH1F* histo_wei_b2 = (TH1F*)weight_b2->Get("weights_bEta");
-  TH1F* histo_wei_b3 = (TH1F*)weight_b3->Get("weights_bEta");
-  TH1F* histo_wei_b4 = (TH1F*)weight_b4->Get("weights_bEta");
-  TH1F* histo_wei_b5 = (TH1F*)weight_b5->Get("weights_bEta");
-  TH1F* histo_wei_b6 = (TH1F*)weight_b6->Get("weights_bEta");
-  TH1F* histo_wei_b7 = (TH1F*)weight_b7->Get("weights_bEta");
+  // MC vs SP weights (bEta)
+  for(int w=0; w<n_q2Bins; w++) {
+    weight_b[w] = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b%i.root",year,w));
+  }
+
+  TString weight_var("kstTrkpEta");
+  TH1F* histo_wei_b[8];
+
+  for(int wei=0; wei<n_q2Bins; wei++) {
+    histo_wei_b[wei] = (TH1F*)weight_b[wei]->Get("weights_"+weight_var);
+  }
 
   // EFFICIENCY
   TH1D* eff_num = new TH1D("eff_num", "eff_num", n_q2Bins, q2Bins);
@@ -96,6 +91,8 @@ void efficiency2(int year){
   double reco_bEta_jpsi;
   double reco_runN_jpsi;
 
+  double wei_variable;
+
   t_reco_jpsi->SetBranchAddress("mumuMass",&reco_mumuMass_jpsi);
   t_reco_jpsi->SetBranchAddress("cos_theta_k",&reco_ctK_jpsi);
   t_reco_jpsi->SetBranchAddress("cos_theta_l",&reco_ctL_jpsi);
@@ -103,8 +100,10 @@ void efficiency2(int year){
   t_reco_jpsi->SetBranchAddress("bEta",&reco_bEta_jpsi);
   t_reco_jpsi->SetBranchAddress("runN",&reco_runN_jpsi);
 
+  t_reco_jpsi->SetBranchAddress(weight_var,&wei_variable);
+
   cout << "RECO JPSI" << endl;
-  for(int evt = 0; evt < t_reco_jpsi->GetEntries(); evt++){
+  for(int evt = 0; evt < t_reco_jpsi->GetEntries()/100; evt++){
     t_reco_jpsi->GetEntry(evt);
 
     if( (year == 2016) && (reco_runN_jpsi >= 272007) && (reco_runN_jpsi <=278801) ){continue;}
@@ -112,8 +111,8 @@ void efficiency2(int year){
     if( (pow(reco_mumuMass_jpsi,2) > q2Bins[4]) && (pow(reco_mumuMass_jpsi,2) < q2Bins[5]) ){
 
       eff_num->Fill(pow(reco_mumuMass_jpsi,2));
-      eff_wei_num->Fill(pow(reco_mumuMass_jpsi,2),read_weights(histo_wei_b4,reco_bEta_jpsi));
-    }
+      eff_wei_num->Fill(pow(reco_mumuMass_jpsi,2),read_weights(histo_wei_b[4],wei_variable));
+    } // 
   }
 
   double genpu_mumuMass_jpsi;
@@ -127,6 +126,8 @@ void efficiency2(int year){
   t_genpu_jpsi->SetBranchAddress("gen_cos_theta_l",&genpu_ctL_jpsi);
   t_genpu_jpsi->SetBranchAddress("gen_phi_kst_mumu",&genpu_phi_jpsi);
   t_genpu_jpsi->SetBranchAddress("runN",&genpu_runN_jpsi);
+
+  t_genpu_jpsi->SetBranchAddress("gen"+weight_var,&wei_variable);
 
   double genpubEta_jpsi;
   double genpumupEta_jpsi;
@@ -149,7 +150,7 @@ void efficiency2(int year){
   t_genpu_jpsi->SetBranchAddress("genkstTrkmPt",&genpukstTrkmPt_jpsi);
 
   cout << "GEN PU JPSI" << endl;
-  for(int evt = 0; evt < t_genpu_jpsi->GetEntries(); evt++){
+  for(int evt = 0; evt < t_genpu_jpsi->GetEntries()/100; evt++){
     t_genpu_jpsi->GetEntry(evt);
 
     if( (year == 2016) && (genpu_runN_jpsi >= 272007) && (genpu_runN_jpsi <= 278801) ){continue;}
@@ -162,7 +163,7 @@ void efficiency2(int year){
           genpukstTrkpPt_jpsi>0.4 && genpukstTrkmPt_jpsi>0.4){
 
 	  eff_den->Fill(pow(genpu_mumuMass_jpsi,2));
-	  eff_wei_den->Fill(pow(genpu_mumuMass_jpsi,2),read_weights(histo_wei_b4,genpubEta_jpsi));
+	  eff_wei_den->Fill(pow(genpu_mumuMass_jpsi,2),read_weights(histo_wei_b[4],wei_variable));
         }
       }
     }
@@ -182,8 +183,10 @@ void efficiency2(int year){
   t_reco_psi->SetBranchAddress("bEta",&reco_bEta_psi);
   t_reco_psi->SetBranchAddress("runN",&reco_runN_psi);
 
+  t_reco_psi->SetBranchAddress(weight_var,&wei_variable);
+
   cout << "RECO PSI" << endl;
-  for(int evt = 0; evt < t_reco_psi->GetEntries(); evt++){
+  for(int evt = 0; evt < t_reco_psi->GetEntries()/100; evt++){
     t_reco_psi->GetEntry(evt);
 
     if( (year == 2016) && (reco_runN_psi >= 272007) && (reco_runN_psi <= 278801) ){continue;}
@@ -191,7 +194,7 @@ void efficiency2(int year){
     if( (pow(reco_mumuMass_psi,2) > q2Bins[6]) && (pow(reco_mumuMass_psi,2) < q2Bins[7]) ){
 
       eff_num->Fill(pow(reco_mumuMass_psi,2));    
-      eff_wei_num->Fill(pow(reco_mumuMass_psi,2),read_weights(histo_wei_b6,reco_bEta_psi));
+      eff_wei_num->Fill(pow(reco_mumuMass_psi,2),read_weights(histo_wei_b[6],wei_variable));
     }
   }
 
@@ -227,8 +230,10 @@ void efficiency2(int year){
   t_genpu_psi->SetBranchAddress("genkstTrkpPt",&genpukstTrkpPt_psi);
   t_genpu_psi->SetBranchAddress("genkstTrkmPt",&genpukstTrkmPt_psi);
 
+  t_genpu_psi->SetBranchAddress("gen"+weight_var,&wei_variable);
+
   cout << "GEN PU PSI" << endl;
-  for(int evt = 0; evt < t_genpu_psi->GetEntries(); evt++){
+  for(int evt = 0; evt < t_genpu_psi->GetEntries()/100; evt++){
     t_genpu_psi->GetEntry(evt);
 
     if( (year == 2016) && (genpu_runN_psi >= 272007) && (genpu_runN_psi <= 278801) ){continue;}
@@ -241,7 +246,7 @@ void efficiency2(int year){
           genpukstTrkpPt_psi>0.4 && genpukstTrkmPt_psi>0.4){
 
           eff_den->Fill(pow(genpu_mumuMass_psi,2));
-	  eff_wei_den->Fill(pow(genpu_mumuMass_psi,2),read_weights(histo_wei_b6,genpubEta_psi));
+	  eff_wei_den->Fill(pow(genpu_mumuMass_psi,2),read_weights(histo_wei_b[6],wei_variable));
         }
       }
     }
@@ -261,8 +266,10 @@ void efficiency2(int year){
   t_reco_lmnr->SetBranchAddress("bEta",&reco_bEta_lmnr);
   t_reco_lmnr->SetBranchAddress("runN",&reco_runN_lmnr);
 
+  t_reco_lmnr->SetBranchAddress(weight_var,&wei_variable);
+
   cout << "RECO LMNR" << endl;
-  for(int evt = 0; evt < t_reco_lmnr->GetEntries(); evt++){
+  for(int evt = 0; evt < t_reco_lmnr->GetEntries()/100; evt++){
     t_reco_lmnr->GetEntry(evt);
 
     if( (year == 2016) && (reco_runN_lmnr >= 272007) && (reco_runN_lmnr <= 278801) ){continue;}
@@ -270,37 +277,37 @@ void efficiency2(int year){
     if( (pow(reco_mumuMass_lmnr,2) > q2Bins[0]) && (pow(reco_mumuMass_lmnr,2) < q2Bins[1]) ){
 
       eff_num->Fill(pow(reco_mumuMass_lmnr,2));
-      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b0,reco_bEta_lmnr));
+      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b[0],wei_variable));
     }
 
     else if( (pow(reco_mumuMass_lmnr,2) > q2Bins[1]) && (pow(reco_mumuMass_lmnr,2) < q2Bins[2]) ){
 
       eff_num->Fill(pow(reco_mumuMass_lmnr,2));
-      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b1,reco_bEta_lmnr));
+      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b[1],wei_variable));
     }
 
     else if( (pow(reco_mumuMass_lmnr,2) > q2Bins[2]) && (pow(reco_mumuMass_lmnr,2) < q2Bins[3]) ){
 
       eff_num->Fill(pow(reco_mumuMass_lmnr,2));
-      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b2,reco_bEta_lmnr));
+      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b[2],wei_variable));
     }
 
     else if( (pow(reco_mumuMass_lmnr,2) > q2Bins[3]) && (pow(reco_mumuMass_lmnr,2) < q2Bins[4]) ){
 
       eff_num->Fill(pow(reco_mumuMass_lmnr,2));
-      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b3,reco_bEta_lmnr));
+      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b[3],wei_variable));
     }
 
     else if( (pow(reco_mumuMass_lmnr,2) > q2Bins[5]) && (pow(reco_mumuMass_lmnr,2) < q2Bins[6]) ){
 
       eff_num->Fill(pow(reco_mumuMass_lmnr,2));
-      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b5,reco_bEta_lmnr));
+      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b[5],wei_variable));
     }
 
     else if( (pow(reco_mumuMass_lmnr,2) > q2Bins[7]) && (pow(reco_mumuMass_lmnr,2) < q2Bins[8]) ){
 
       eff_num->Fill(pow(reco_mumuMass_lmnr,2));
-      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b7,reco_bEta_lmnr));
+      eff_wei_num->Fill(pow(reco_mumuMass_lmnr,2),read_weights(histo_wei_b[7],wei_variable));
     }
 
   }
@@ -337,8 +344,10 @@ void efficiency2(int year){
   t_genpu_lmnr->SetBranchAddress("genkstTrkpPt",&genpukstTrkpPt_lmnr);
   t_genpu_lmnr->SetBranchAddress("genkstTrkmPt",&genpukstTrkmPt_lmnr);
 
+  t_genpu_lmnr->SetBranchAddress("gen"+weight_var,&wei_variable);
+
   cout << "GEN PU LMNR" << endl;
-  for(int evt = 0; evt < t_genpu_lmnr->GetEntries(); evt++){
+  for(int evt = 0; evt < t_genpu_lmnr->GetEntries()/100; evt++){
     t_genpu_lmnr->GetEntry(evt);
 
     if( (year == 2016) && (genpu_runN_lmnr >= 272007) && (genpu_runN_lmnr <= 278801) ){continue;}
@@ -351,7 +360,7 @@ void efficiency2(int year){
           genpukstTrkpPt_lmnr>0.4 && genpukstTrkmPt_lmnr>0.4){
 
           eff_den->Fill(pow(genpu_mumuMass_lmnr,2));
-	  eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b0,genpubEta_lmnr));
+	  eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b[0],wei_variable));
         }
       }
     }
@@ -364,7 +373,7 @@ void efficiency2(int year){
           genpukstTrkpPt_lmnr>0.4 && genpukstTrkmPt_lmnr>0.4){
 
           eff_den->Fill(pow(genpu_mumuMass_lmnr,2));
-          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b1,genpubEta_lmnr));
+          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b[1],wei_variable));
         }
       }
     }
@@ -377,7 +386,7 @@ void efficiency2(int year){
           genpukstTrkpPt_lmnr>0.4 && genpukstTrkmPt_lmnr>0.4){
 
           eff_den->Fill(pow(genpu_mumuMass_lmnr,2));
-          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b2,genpubEta_lmnr));
+          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b[2],wei_variable));
         }
       }
     }
@@ -390,7 +399,7 @@ void efficiency2(int year){
           genpukstTrkpPt_lmnr>0.4 && genpukstTrkmPt_lmnr>0.4){
 
           eff_den->Fill(pow(genpu_mumuMass_lmnr,2));
-          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b3,genpubEta_lmnr));
+          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b[3],wei_variable));
         }
       }
     }
@@ -403,7 +412,7 @@ void efficiency2(int year){
           genpukstTrkpPt_lmnr>0.4 && genpukstTrkmPt_lmnr>0.4){
 
           eff_den->Fill(pow(genpu_mumuMass_lmnr,2));
-          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b5,genpubEta_lmnr));
+          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b[5],wei_variable));
         }
       }
     }
@@ -416,7 +425,7 @@ void efficiency2(int year){
           genpukstTrkpPt_lmnr>0.4 && genpukstTrkmPt_lmnr>0.4){
 
           eff_den->Fill(pow(genpu_mumuMass_lmnr,2));
-          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b7,genpubEta_lmnr));
+          eff_wei_den->Fill(pow(genpu_mumuMass_lmnr,2),read_weights(histo_wei_b[7],wei_variable));
         }
       }
     }
@@ -460,7 +469,7 @@ void efficiency2(int year){
   t_gen_jpsi->SetBranchAddress("genkstTrkmPt",&genkstTrkmPt_jpsi);
 
   cout << "GEN JPSI" << endl;
-  for(int evt = 0; evt < t_gen_jpsi->GetEntries(); evt++){
+  for(int evt = 0; evt < t_gen_jpsi->GetEntries()/100; evt++){
     t_gen_jpsi->GetEntry(evt);
 
     if( (year == 2016) && (gen_runN_jpsi >= 272007) && (gen_runN_jpsi <= 278801) ){continue;};
@@ -513,7 +522,7 @@ void efficiency2(int year){
   t_gen_psi->SetBranchAddress("genkstTrkmPt",&genkstTrkmPt_psi);
 
   cout << "GEN PSI" << endl;
-  for(int evt = 0; evt < t_gen_psi->GetEntries(); evt++){
+  for(int evt = 0; evt < t_gen_psi->GetEntries()/100; evt++){
     t_gen_psi->GetEntry(evt);
 
     if( (year == 2016) && (gen_runN_psi >= 272007) && (gen_runN_psi <= 278801) ){continue;}
@@ -566,7 +575,7 @@ void efficiency2(int year){
   t_gen_lmnr->SetBranchAddress("genkstTrkmPt",&genkstTrkmPt_lmnr);
 
   cout << "GEN LMNR" << endl;
-  for(int evt = 0; evt < t_gen_lmnr->GetEntries(); evt++){
+  for(int evt = 0; evt < t_gen_lmnr->GetEntries()/100; evt++){
     t_gen_lmnr->GetEntry(evt);
 
     if( (year == 2016) && (gen_runN_lmnr >= 272007) && (gen_runN_lmnr <= 278801) ){continue;}
