@@ -70,7 +70,7 @@ void efficiency2(int year){
     weight_b[w] = new TFile(Form("/home/t3cms/mcarolina/samples/Anomalies/weights_%i_b%i.root",year,w));
   }
 
-  TString weight_var("kstTrkpEta");
+  TString weight_var("kstTrkpPt");
   TH1F* histo_wei_b[8];
 
   for(int wei=0; wei<n_q2Bins; wei++) {
