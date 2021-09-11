@@ -32,15 +32,15 @@ void multigraphs(int year) {
 
   //get efficiencies
 
-  TFile* f_nom_eff = new TFile(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rootfiles/nom_eff_%i.root",year));
-  TFile* f_wei_bEta = new TFile(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rootfiles/wei_eff_%i_bEta.root",year));
-  TFile* f_wei_k = new TFile(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rootfiles/wei_eff_%i_kstTrkpEta.root",year));
-  TFile* f_wei_bPt = new TFile(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rootfiles/wei_eff_%i_bPt.root",year));
+  TFile* f_nom_eff = new TFile(Form("./nom_eff_%i.root",year));
+  TFile* f_wei_bEta = new TFile(Form("./wei_eff_%i_bEta.root",year));
+  TFile* f_wei_k = new TFile(Form("./wei_eff_%i_kstTrkpEta.root",year));
+  TFile* f_wei_bPt = new TFile(Form("./wei_eff_%i_bPt.root",year));
 
-  TGraph* nom_eff = (TGraph*)f_nom_eff->Get("Graph;1");
-  TGraph* wei_bEta = (TGraph*)f_wei_bEta->Get("Graph;1");
-  TGraph* wei_k = (TGraph*)f_wei_k->Get("Graph;1");
-  TGraph* wei_bPt = (TGraph*)f_wei_bPt->Get("Graph;1");
+  TGraph* nom_eff = (TGraph*)f_nom_eff->Get("gr2");
+  TGraph* wei_bEta = (TGraph*)f_wei_bEta->Get("gr3");
+  TGraph* wei_k = (TGraph*)f_wei_k->Get("gr3");
+  TGraph* wei_bPt = (TGraph*)f_wei_bPt->Get("gr3");
 
   //plot multigraph
 
