@@ -64,6 +64,7 @@ void multigraphs(int year) {
   leg1->Draw();
   mg1->GetXaxis()->SetTitle("q^{2} [GeV^{2}]");
   mg1->GetYaxis()->SetTitle("Efficiency Systematic Uncertainty");
+  mg1->SetMinimum(0);
 
   c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rootfiles/effs_%i.gif",year));
 
@@ -99,6 +100,7 @@ void multigraphs(int year) {
   leg2->Draw();
   mg2->GetYaxis()->SetTitle("Relative Difference");
   mg2->GetXaxis()->SetTitle("q^{2} [GeV^{2}]");
+  mg2->SetMinimum(0);
 
   c2.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rootfiles/rel_diffs_%i.gif",year));
   
