@@ -48,8 +48,6 @@ void rel_diff(int year) {
   Double_t q2Bins[] = {1, 2, 4.3, 6, 8.68, 10.09, 12.86, 14.18, 16};
   Int_t n_bins = 8;
 
-  TCanvas c1;
-  
   for(int i=0; i<n_bins; i++) {
 
     efficiency[i] = eff->GetEfficiency(i+1);
@@ -67,65 +65,57 @@ void rel_diff(int year) {
   //PLOT RELATIVE DIFERENCE
   
   TGraph* gr1 = new TGraph(n_bins,q2Bins,relative_diff);
+  
+  TCanvas c1;
+  c1.cd();
   gr1->SetName("gr1");
   gr1->Draw("AP");
   gr1->SetMarkerColor(kGreen); //CHANGE
   gr1->SetMarkerStyle(kFullDotLarge);
   gr1->SetTitle("");
-  gr1->GetYaxis()->SetTitle("Relative Difference");
-  gr1->GetXaxis()->SetTitle("q^{2} [GeV^{2}]");
-  
-  auto leg1 = new TLegend(0.65,0.8,0.9,0.88);
-  leg1->Draw();
-  leg1->AddEntry("gr1","weights_"+wei_variable,"p");
-  leg1->SetBorderSize(0);
+  c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i_%s.gif",year,wei_variable.Data()));
 
-  c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rel_diff_%i_bPt.gif",year));
-
-  TFile* f_rel = new TFile(Form("./rootfiles/rel_diff_%i.root",year),"RECREATE");
+  TFile* f_rel = new TFile(Form("./rootfiles/rel_diff_%i_%s.root",year,wei_variable.Data()),"RECREATE");
   f_rel->cd();
   gr1->Write();
   f_rel->Close();
   
-  //PLOT EFFICIENCIES IN MULTIGRAPH
+  //PLOT NOMINAL EFFICIENCY
 
-  TMultiGraph *mg = new TMultiGraph();
-  
   TGraph* gr2 = new TGraph(n_bins,q2Bins,efficiency);
-  gr2->SetName("gr2");
-  gr2->Draw("AP");
-  gr2->SetMarkerColor(kRed);
-  gr2->SetMarkerStyle(kFullDotLarge);
-  gr2->SetTitle("");
-  
-  TGraph* gr3 = new TGraph(n_bins,q2Bins,wei_efficiency);
-  gr3->SetName("gr3");
-  gr3->Draw("AP");
-  gr3->SetMarkerColor(kGreen);
-  gr3->SetMarkerStyle(kFullDotLarge);
-  gr3->SetTitle("Weighted Efficiency");
-  
-  mg->Add(gr2);
-  mg->Add(gr3);
-  
-  auto leg2 = new TLegend(0.65,0.7,0.9,0.88);
-  leg2->Draw();
-  leg2->AddEntry("gr2","Efficiency","p");
-  leg2->AddEntry("gr3","Weighted Efficiency","p");
-  leg2->SetBorderSize(0);
   
   TCanvas c2;
   c2.cd();
+  gr2->SetName("gr2");
+  gr2->Draw("AP");
+  gr2->SetMarkerColor(kBlue);
+  gr2->SetMarkerStyle(kFullDotLarge);
+  gr2->SetTitle("");
+  gr2->GetXaxis()->SetTitle("q^{2} [GeV^{2}]");
+  gr2->GetYaxis()->SetTitle("Nominal Efficiency");
+  c2.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rootfiles/nomeff/nom_eff_%i.gif",year));
 
-  mg->Draw("AP");
-  leg2->Draw();
-  mg->GetXaxis()->SetTitle("q^{2} [GeV^{2}]");
+  TFile* f_egr = new TFile(Form("./rootfiles/nom_eff_%i.root",year),"RECREATE");
+  f_egr->cd();
+  gr2->Write();
+  f_egr->Close();
+    
+  //PLOT WEIGHTED EFFICIENCY
+  
+  TGraph* gr3 = new TGraph(n_bins,q2Bins,wei_efficiency);
+  
+  TCanvas c3;
+  c3.cd();
+  gr3->SetName("gr3");
+  gr3->Draw("AP");
+  gr3->SetMarkerColor(kOrange); //CHANGE
+  gr3->SetMarkerStyle(kFullDotLarge);
+  gr3->SetTitle("");
+  c3.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/wei_eff_%i_%s.gif",year,wei_variable.Data()));
 
-  c2.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/all_%i_bPt.gif",year));
-  
-  TFile* f_cp = new TFile(Form("./rootfiles/cp_%i.root",year),"RECREATE");
-  f_cp->cd();
-  mg->Write();
-  f_cp->Close();
-  
+  TFile* f_wgr = new TFile(Form("./rootfiles/wei_eff_%i_%s.root",year,wei_variable.Data()),"RECREATE");
+  f_wgr->cd();
+  gr3->Write();
+  f_wgr->Close();
+    
 }
