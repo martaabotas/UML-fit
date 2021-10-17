@@ -63,7 +63,7 @@ void multigraphs(int year) {
   mg1->Draw("AP");
   leg1->Draw();
   mg1->GetXaxis()->SetTitle("q^{2} [GeV^{2}]");
-  mg1->GetYaxis()->SetTitle("Efficiency Systematic Uncertainty");
+  mg1->GetYaxis()->SetTitle("Efficiency");
   mg1->SetMinimum(0);
 
   c1.SaveAs(Form("/home/t3cms/u21mbotas/efficiency/UML-fit/Efficiency/rootfiles/effs_%i.gif",year));
