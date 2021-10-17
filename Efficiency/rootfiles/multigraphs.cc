@@ -98,7 +98,7 @@ void multigraphs(int year) {
 
   mg2->Draw("AP");
   leg2->Draw();
-  mg2->GetYaxis()->SetTitle("Relative Difference");
+  mg2->GetYaxis()->SetTitle("Efficiency Relative Difference");
   mg2->GetXaxis()->SetTitle("q^{2} [GeV^{2}]");
   mg2->SetMinimum(0);
 
